@@ -614,7 +614,7 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
 {
     player->stop();
 
-    //Get path C:\\Users\\Shahrooz\\Music\\Foo_Fighters_-_Times_Like_These.mp3
+    //Get path
     currentSongPath = songItemModel->item(ui->treeView->currentIndex().row(),4)->text();
     QFile listFile(currentSongPath);
 
