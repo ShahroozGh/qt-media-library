@@ -1,0 +1,30 @@
+Intro;DMX;It's Dark and Hell is Hot;Hip Hop;hello
+End of Line;Daft Punk;TRON: Legacy;Electronic;no
+Strawberry Wine;Deana Carter;Untitled;Country;C:\\Users\\Shahrooz\\Music\\Foo_Fighters_-_Times_Like_These.mp3
+Beautiful Ride;Dewey Cox;Untitled;Country;Unknown
+Unbelieveable;Diamond Rio;Unbelievable;Country;Unknown
+Sooner Or Later;Drake;So Far Gone;Hip Hop;C:/Users/Shahrooz/Music/U2---Ordinary-Love--From-Mandela-OST--Lyric-Video.mp3
+How Bout Now;Drake;How About Now;Hip Hop;Unknown
+So Bad;Eminem;Recovery;Hip Hop;C:/Users/Shahrooz/Music/Lorde---Buzzcut-Season.mp3
+Mockingbird;Eminem;Encore;Hip Hop;Unknown
+There You'll Be;Faith Hill;Cry;Country;Unknown
+Glass;Gesaffelstein;Untitled;Electronic;C:/Users/Shahrooz/Music/LikeClockwork/Queens of the Stone Age - ...Like Clockwork (2013) [MP3 320]/02 - I Sat By The Ocean.mp3
+What we aint got;Jake;Days of Gold;Country;C:/Users/Shahrooz/Music/LikeClockwork/Queens of the Stone Age - ...Like Clockwork (2013) [MP3 320]/06 - Kalopsia.mp3
+In Color;Jamey Johnson;That Lonesome Song;Country;Unknown
+Lights Out;Jean Grae;The Evil Jeanius;Hip Hop;Unknown
+Ring Of Fire;Johnny Cash;Ring of Fire: The Best of Johnny Cash;Country;C:/Users/Shahrooz/Music/FFNewAlbum/Foo-Fighters---Outside.mp3
+Saturn;Kill the Noise;Black Magic;Electronic;Unknown
+Late;Kwan;Untitled;Hip Hop;Unknown
+Take Flight;Lindsey Stirling;Shatter Me;Electronic;C:/Users/Shahrooz/Music/LikeClockwork/Queens of the Stone Age - ...Like Clockwork (2013) [MP3 320]/08 - Smooth Sailing.mp3
+Shatter Me;Lindsey Stirling;Shatter Me;Electronic;Unknown
+Radioactive;Lindsey Stirling;PTX, Vols. 1 & 2;Electronic;Unknown
+Im Already There;Lone Star;Im Already There;Country;Unknown
+Say;Method Man;4:21... The Day After;Hip Hop;Unknown
+Porcelain;Moby;Unkown;Electronic;Unknown
+Toxic;Mushmellow;Unknown;Electronic;Unknown
+Counting Stars;Radix;Unknown;Hip Hop;Unknown
+Spice;Sonny Banks;Powered by Inspected;Electronic;Unknown
+Blank Space;Taylor Swift;1989;Hip Hop;Unknown
+White Blank Page;Taylor Swift;Unknown;Country;Unknown
+Shake it Off;Taylor Swift;Shake It Off;Country;Unknown
+Clarity;Zedd;Unknown;Electronic;Unknown
