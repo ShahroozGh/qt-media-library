@@ -87,7 +87,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QStandardItemModel *songItemModel;
+    QStandardItemModel *songItemModel;          //Data struct that holds song list data for display
     QString currentUser, currentSongPath;
     QMediaPlayer *player;
     bool unsavedChanges, isLoading;

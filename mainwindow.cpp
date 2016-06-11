@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->lcdNumber->setPalette(Qt::black);
 
+    //True if file is currently being read
     isLoading = false;
 
     //Create new item model
@@ -72,6 +73,8 @@ MainWindow::~MainWindow()
 //-----------------------------------------------------------
 
 //Add song Button
+//This function will add a new item to the list based on data given in the text boxes
+//For now used just for testing purposes
 void MainWindow::on_pushButtonAdd_clicked()
 {
     //Get text from lineEdit txt boxes
@@ -134,7 +137,7 @@ void MainWindow::on_pushButtonDelete_clicked()
     ui->treeView->resizeColumnToContents(2);
     ui->treeView->resizeColumnToContents(3);
 
-    //check if album art should be deleted
+    //need to check if album art should be deleted from folder
 
     changesMade();
 
@@ -143,7 +146,7 @@ void MainWindow::on_pushButtonDelete_clicked()
 void MainWindow::on_pushButtonSearch_clicked()
 {
 
-    qDebug() << "clicked";
+    qDebug() << "search clicked";
     ui->lineEditSearch->clear();
 
     //temp
@@ -166,6 +169,9 @@ void MainWindow::on_pushButtonSort_clicked()
     ui->treeView->setModel(songItemModel);
 }
 //-----------------------------------------------------------
+//Triggered when search query text changes
+//Updates proxyModel to display matching items in the list
+//Without modifying main model
 void MainWindow::on_lineEditSearch_textChanged(const QString &arg1)
 {
     //Create a proxymodel that can be modified w/out changing og model
@@ -221,6 +227,7 @@ void MainWindow::on_actionSave_as_triggered()
     }
 }
 //-----------------------------------------------------------
+//If sa
 void MainWindow::on_actionSave_triggered()
 {
     //Check if file DNE, if so call saveAs func
@@ -241,6 +248,7 @@ void MainWindow::on_actionSave_triggered()
 }
 
 //-----------------------------------------------------------
+//Write updated data in model (song list) to correct text file for current library
 void MainWindow::writeSaveFile(QFile &file)
 {
     QTextStream output(&file);
@@ -260,6 +268,8 @@ void MainWindow::writeSaveFile(QFile &file)
 
 }
 //-----------------------------------------------------------
+//Used to display asterix to notify user of unsaved changes
+//Call whenever changes are made that need to be saved
 void MainWindow::changesMade()
 {
     if (!unsavedChanges)
@@ -270,6 +280,8 @@ void MainWindow::changesMade()
 
 }
 
+//Used to remove asterix if there are no unsaved changes
+//Call whenever changes are saved
 void MainWindow::changesSaved()
 {
     unsavedChanges = false;
@@ -279,7 +291,7 @@ void MainWindow::changesSaved()
 //-----------------------------------------------------------
 void MainWindow::on_actionOpen_triggered()
 {
-    //Maybe save first
+    //Use message box to give user opportunity to save changes
     QMessageBox msgBox;
     msgBox.setText("The document has been modified.");
     msgBox.setInformativeText("Do you want to save your changes?");
@@ -334,6 +346,7 @@ void MainWindow::on_actionOpen_triggered()
 
         qDebug() << "here";
 
+        //Read data from text file into song item model
         isLoading = true;
         do {
             line = input.readLine();
@@ -342,6 +355,7 @@ void MainWindow::on_actionOpen_triggered()
             if(!line.isNull())
             {
                 list = line.split(";");
+                //Check if list.size != 5, if so it is invalid
                 songItemModel->setItem(row, 0, new QStandardItem(list[0]));
                 songItemModel->setItem(row, 1, new QStandardItem(list[1]));
                 songItemModel->setItem(row, 2, new QStandardItem(list[2]));
@@ -379,19 +393,29 @@ void MainWindow::on_actionOpen_triggered()
     }
 }
 
+//Called if an item's data has been edited
 void MainWindow::slot_itemChanged(QStandardItem* item)
 {
     changesMade();
+    //If new data is empty replace string with Unknown
     if (item->text() == "" || item->text() == " ")
     {
+        //Maybe block signal first so that this next statement doesnt trigger slot_temChanged
+        //thus avoiding an infinite loop (not sure if setText will trigger it)
+        //As of now it doesnt seem to trigger it, only editing form the GUI seems too
+        qDebug() << "item setText()\n";
         item->setText("Unknown");
     }
 
     if (!isLoading)
     {
+        //Get items row
         int row = item->row();
+        //Get audio file from given path
         QFile file(songItemModel->item(row,4)->text());
 
+        //Check if the audio file exists
+        //If not change its text color to gray to notify user
         if (!file.exists())
         {
             QBrush brush(Qt::gray);
@@ -418,6 +442,9 @@ void MainWindow::slot_itemChanged(QStandardItem* item)
 
 }
 
+
+//Triggered when a row in the song list is selected
+//This function will then update the album image currently displayed to match the selected song
 void MainWindow::slot_selectionChanged()
 {
 
@@ -461,7 +488,8 @@ void MainWindow::slot_selectionChanged()
 
 }
 
-
+//When add artwork button is clicked this will be triggered
+//Function allows user to select an image file to use for this album
 void MainWindow::on_addArtButton_clicked()
 {
     QString currentAlbum = songItemModel->item(ui->treeView->currentIndex().row(),2)->text();
@@ -478,6 +506,7 @@ void MainWindow::on_addArtButton_clicked()
     }
 }
 
+//Allows user to add an mp3 file for the currently selected song
 void MainWindow::on_linkMusicButton_clicked()
 {
     int currentRow = ui->treeView->currentIndex().row();
@@ -573,7 +602,7 @@ void MainWindow::slot_mediaStatusChanged(QMediaPlayer::MediaStatus stat)
     qDebug() << stat;
     if (stat == QMediaPlayer::LoadedMedia)
     {
-    player->play();
+        player->play();
     }
 
 }
