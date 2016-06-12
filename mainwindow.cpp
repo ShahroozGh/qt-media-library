@@ -84,7 +84,87 @@ MainWindow::~MainWindow()
     delete ui;
     //Free fmod resources
 }
+
+//Drag and Drop events
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list"))
+            event->acceptProposedAction();
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    qDebug() << "DROP";
+    QList<QUrl> urls = event->mimeData()->urls();
+       if (urls.isEmpty()){
+            qDebug() << "Empty Drop URL";
+            return;
+       }
+
+
+       for (int i = 0; i < urls.size(); i++){
+           QString fileName = urls[i].toLocalFile();
+
+           //Check if file name exists
+           if (fileName.isEmpty()){
+               qDebug() << "File name is empty: " << i;
+
+           }
+           else {
+                qDebug() << fileName << " DROPPED #" << i << " Suffix: " << QFileInfo(fileName).suffix() << " Base: " << QFileInfo(fileName).baseName();
+                if (QFileInfo(fileName).suffix() == "mp3")
+                    addFile(fileName.toStdString());
+
+           }
+
+
+       }
+
+
+       //if (readFile(fileName))
+       //    setWindowTitle(tr("%1 - %2").arg(fileName).arg(tr("Drag File")));
+}
 //-----------------------------------------------------------
+
+//Add song to list given file name
+//Attempt to fill in info given mp3 tag data
+void MainWindow::addFile(std::string path)
+{
+    //Get text from lineEdit txt boxes
+    QString title = QFileInfo(QString::fromStdString(path)).baseName();
+    QString artist = "unknown";
+    QString album = "unknown";
+    QString genre = "unknown";
+    QString pathName = QString::fromStdString(path);
+
+    //Create item for each
+    QStandardItem *titleItem = new QStandardItem(title);
+    QStandardItem *artistItem = new QStandardItem(artist);
+    QStandardItem *albumItem = new QStandardItem(album);
+    QStandardItem *genreItem = new QStandardItem(genre);
+    QStandardItem *pathItem = new QStandardItem(pathName);
+
+    //Add items to a list (of 3 QStanItems)
+    QList<QStandardItem*> list;
+    list << titleItem << artistItem << albumItem << genreItem << pathItem;
+
+    //Insert list of items as a row
+    songItemModel->insertRow(0, list);
+
+    //Clear text boxes
+    ui->lineEditTitle->clear();
+    ui->lineEditArtist->clear();
+    ui->lineEditAlbum->clear();
+    ui->lineEditGenre->clear();
+
+    //Resize columns
+    ui->treeView->resizeColumnToContents(0);
+    ui->treeView->resizeColumnToContents(1);
+    ui->treeView->resizeColumnToContents(2);
+    ui->treeView->resizeColumnToContents(3);
+
+    changesMade();
+}
 
 //Add song Button
 //This function will add a new item to the list based on data given in the text boxes
@@ -537,6 +617,8 @@ void MainWindow::on_linkMusicButton_clicked()
 
 
 }
+
+
 
 //Fmod requires an update function to be called periodically for fft to work
 //Also updates trackbar position

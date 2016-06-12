@@ -40,6 +40,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    //Overrided functions
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
+
 private slots:
     void updateLoop();
 
@@ -102,7 +107,7 @@ private:
     AudioSystem fmodSys;
 
 
-
+    void addFile(std::string path);
     void writeSaveFile(QFile &file);
     void changesMade();
     void changesSaved();
