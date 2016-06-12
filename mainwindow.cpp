@@ -62,6 +62,11 @@ MainWindow::MainWindow(QWidget *parent) :
    //Initialize audio system
    fmodSys.initFMOD();
 
+   //Set up freq scene
+   visualizer.initScene();
+   //ui->graphicsView->setStyleSheet("background: transparent");
+   ui->graphicsView->setScene(visualizer.getScene());
+
 
    //Set up signal/slot to detect when selection changes
    QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
@@ -627,6 +632,10 @@ void MainWindow::updateLoop()
     //qDebug() << "Updatye";
     fmodSys.updateTick();
     fmodSys.updateFFT();
+
+    visualizer.plotSpectrum(fmodSys.getRawSpectrumData());
+
+    ui->graphicsView->repaint();
 
     //Update trackbar position
 

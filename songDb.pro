@@ -16,10 +16,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    AudioSystem.cpp
+    AudioSystem.cpp \
+    SpectrumVisualizer.cpp
 
 HEADERS  += mainwindow.h \
-    AudioSystem.h
+    AudioSystem.h \
+    SpectrumVisualizer.h
 
 
 FORMS    += mainwindow.ui

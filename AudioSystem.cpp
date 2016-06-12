@@ -127,7 +127,21 @@ std::vector<float> AudioSystem::getFormattedSpectrumData()
 		spectrum.push_back(-1.0f);
 		
 	}
-	return spectrum;
+    return spectrum;
+}
+
+std::vector<float> AudioSystem::getRawSpectrumData()
+{
+    std::vector<float> spectrum;
+
+    if (channel){
+        for (int i = 0; i < 1024; i++) {
+            float volVal = fftparameter->spectrum[0][i];
+            spectrum.push_back(volVal);
+        }
+    }
+    return spectrum;
+
 }
 
 void AudioSystem::togglePause()

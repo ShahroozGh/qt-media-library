@@ -28,6 +28,8 @@
 
 #include "AudioSystem.h"
 
+#include "SpectrumVisualizer.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -105,6 +107,8 @@ private:
     bool unsavedChanges, isLoading;
     //Audio System
     AudioSystem fmodSys;
+
+    SpectrumVisualizer visualizer;
 
 
     void addFile(std::string path);

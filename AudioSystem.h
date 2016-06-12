@@ -47,6 +47,7 @@ public:
 	void updateFFT();
 
 	std::vector<float> getFormattedSpectrumData();
+    std::vector<float> getRawSpectrumData();
 
 	//Control Functions
 	void togglePause();
