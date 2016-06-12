@@ -24,6 +24,10 @@
 
 #include <QtMultimedia>
 
+#include <QTimer>
+
+#include "AudioSystem.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -37,6 +41,8 @@ public:
     ~MainWindow();
 
 private slots:
+    void updateLoop();
+
     void on_pushButtonAdd_clicked();
 
     void on_pushButtonDelete_clicked();
@@ -90,7 +96,12 @@ private:
     QStandardItemModel *songItemModel;          //Data struct that holds song list data for display
     QString currentUser, currentSongPath;
     QMediaPlayer *player;
+    QTimer *updateTimer;
     bool unsavedChanges, isLoading;
+    //Audio System
+    AudioSystem fmodSys;
+
+
 
     void writeSaveFile(QFile &file);
     void changesMade();

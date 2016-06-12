@@ -57,9 +57,22 @@ MainWindow::MainWindow(QWidget *parent) :
    QPixmap pic(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
    ui->albumCoverLabel->setPixmap(pic.scaled(300,300,Qt::KeepAspectRatio,Qt::SmoothTransformation));
     //ui->treeView->editTriggers()
+
+
+   //Initialize audio system
+   fmodSys.initFMOD();
+
+
    //Set up signal/slot to detect when selection changes
    QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
    QObject::connect(songItemModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(slot_itemChanged(QStandardItem*)));
+
+   //Timer to signal update loop for fft
+   updateTimer = new QTimer(this);
+   connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateLoop()));
+   updateTimer->start(30);
+
+   //Delete
    QObject::connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(updatePosition(qint64)));
    QObject::connect(player, SIGNAL(durationChanged(qint64)), this, SLOT(updateDuration(qint64)));
    QObject::connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(slot_mediaStatusChanged(QMediaPlayer::MediaStatus)));
@@ -69,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    //Free fmod resources
 }
 //-----------------------------------------------------------
 
@@ -524,6 +538,31 @@ void MainWindow::on_linkMusicButton_clicked()
 
 }
 
+//Fmod requires an update function to be called periodically for fft to work
+//Also updates trackbar position
+void MainWindow::updateLoop()
+{
+    //qDebug() << "Updatye";
+    fmodSys.updateTick();
+    fmodSys.updateFFT();
+
+    //Update trackbar position
+
+    //Get song position in percentage
+    if (fmodSys.isPlaying())
+    {
+        float percent = (float)fmodSys.getPosition()/(float)fmodSys.getLength();
+
+        int trackBarLength = ui->trackSlider->maximum() - ui->trackSlider->minimum();
+
+        ui->trackSlider->setValue(trackBarLength * percent);
+
+        QTime duration(0, fmodSys.getPosition() / 60000, qRound((fmodSys.getPosition() % 60000) / 1000.0));
+        //positionLabel->setText(duration.toString(tr("mm:ss")));
+        ui->lcdNumber->display(duration.toString(tr("mm:ss")));
+    }
+}
+
 void MainWindow::on_actionNew_triggered()
 {
     //Maybe save first
@@ -650,8 +689,12 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     if (listFile.exists())
     {
         qDebug() << "EXISTS!!!!!!!!!!!!!!!!";
+        //Attempt to load song and play it
+        fmodSys.setAudioFile(currentSongPath.toStdString());
+        fmodSys.startPlayback();
+        fmodSys.setVolume(ui->volumeSlider->sliderPosition()/100.0f);
         ui->pausePlayButton->setChecked(true);
-        on_pausePlayButton_clicked(true);
+        //on_pausePlayButton_clicked(true);
 
     }
     else
@@ -662,7 +705,7 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     }
 }
 
-//Play only if path is valid
+//Play only if path is valid, checked == true means playing
 void MainWindow::on_pausePlayButton_clicked(bool checked)
 {
     qDebug() << checked;
@@ -670,60 +713,16 @@ void MainWindow::on_pausePlayButton_clicked(bool checked)
 
     if (!currentSongPath.isEmpty())
     {
+        //There is a song in the selection
         qDebug() << "Path is not Empty";
-        if (checked)
-        {
-            if (player->state() != QMediaPlayer::PausedState)
-            {
-                //player->setMedia(QUrl::fromLocalFile(currentSongPath));
-                QUrl url(currentSongPath);//This doesnt accept double slashes
-                player->setMedia(url);
-                player->setVolume(ui->volumeSlider->sliderPosition());
+        //Check if selected song has changed i.e fmodSys songPath != currentSongPath
 
-                switch ( player->error()) {
-                  case QMediaPlayer::NoError:
-                         qDebug() << "No Error******";
-                      break;
-                  case QMediaPlayer::ResourceError	:
-                      qDebug() << "Resource Error******";
-                      break;
-                  case QMediaPlayer::FormatError:
-                      qDebug() << "Format Error******";
-                        return;
-                      break;
-                case QMediaPlayer::NetworkError:
-                    qDebug() << "Network Error*******";
-                      return;
-                    break;
-                case QMediaPlayer::AccessDeniedError:
-                    qDebug() << "Access Denied Error*******";
-                      return;
-                    break;
-                case QMediaPlayer::ServiceMissingError:
-                    qDebug() << "Service Missing Error*******";
-                      return;
-                    break;
-                  default:
-                      qDebug() << "default********";
-                      break;
-                }
+        fmodSys.setPaused(!checked);
 
-
-            }
-            else
-            {
-                player->play();
-            }
-            //Maybe wait for loaded
-            //player->play();
-        }
-        else
-        {
-            player->pause();
-        }
     }
     else
     {
+        //Song path empty
         qDebug() << "did not play";
         ui->pausePlayButton->setChecked(false);
     }
@@ -733,14 +732,20 @@ void MainWindow::on_pausePlayButton_clicked(bool checked)
 //Volume slider
 void MainWindow::on_volumeSlider_sliderMoved(int position)
 {
-    player->setVolume(position);
+    fmodSys.setVolume(position/100.0f);
 }
 
 
-
+//Change to action triggered
 void MainWindow::on_trackSlider_sliderMoved(int position)
 {
-    player->setPosition(position);
+    int max = ui->trackSlider->maximum();
+    int min = ui->trackSlider->minimum();
+
+
+    float percent = position/(float)(max-min);
+
+    fmodSys.setPosition(percent * fmodSys.getLength());
 }
 
 void MainWindow::updatePosition(qint64 position)
@@ -762,34 +767,34 @@ void MainWindow::updateDuration(qint64 duration)
 
 void MainWindow::on_forwardButton_clicked()
 {
-    int increment = (player->duration())/10;
+    float increment = (fmodSys.getLength())/10.0f;
 
-    int newPos = player->position() + increment;
+    float newPos = fmodSys.getPosition() + increment;
 
-    if (newPos > player->duration())
+    if (newPos > fmodSys.getLength())
     {
-        player->setPosition(player->duration());
+        //Dont seek if no space
     }
     else
     {
-        player->setPosition(newPos);
+        fmodSys.seek((int)increment);
     }
 
 }
 
 void MainWindow::on_backButton_clicked()
 {
-    int increment = (player->duration())/10;
+    float increment = (fmodSys.getLength())/10.0f;
 
-    int newPos = player->position() - increment;
+    float newPos = fmodSys.getPosition() + increment;
 
     if (newPos < 0)
     {
-        player->setPosition(0);
+        //Dont seek if no space
     }
     else
     {
-        player->setPosition(newPos);
+        fmodSys.seek((int)increment * -1);
     }
 }
 
