@@ -70,6 +70,8 @@ public:
 
     void setPaused(bool paused);
 
+    std::string FMOD_Result_toString(FMOD_RESULT result);
+
     std::string getCurrentSongPath();
 
 

@@ -768,7 +768,7 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     currentSongPath = songItemModel->item(ui->treeView->currentIndex().row(),4)->text();
     QFile listFile(currentSongPath);
 
-    if (listFile.exists())
+    if (listFile.exists()) //Check if it is an mp3 as well
     {
         qDebug() << "EXISTS!!!!!!!!!!!!!!!!";
         //Attempt to load song and play it
