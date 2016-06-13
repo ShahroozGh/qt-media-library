@@ -15,15 +15,13 @@ void SpectrumVisualizer::initScene()
 {
     scene = new QGraphicsScene();
 
-    QBrush greenBrush(Qt::green);
-    QBrush blueBrush(Qt::blue);
-    QBrush brush(QColor(255,0,0,0));
-    QPen outlinePen(Qt::black);
+    QBrush brush(Qt::green);
+    QPen outlinePen(Qt::gray);
     outlinePen.setWidth(0);
 
 
     for(int i = 0; i < 256; i++){
-        bars.push_back(scene->addRect(4*i, 0, 1, -i*0.1, outlinePen, greenBrush));
+        bars.push_back(scene->addRect(4*i, 0, 1, -i*0.1, outlinePen, brush));
     }
 
 }

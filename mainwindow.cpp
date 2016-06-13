@@ -11,6 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
     unsavedChanges = true;
     this->setWindowTitle("Untitled*");
 
+    //this->setStyleSheet("background-color: grey;");
+    //this->setPalette( QPalette(QColor(55,55,55)) );
+
+
     ui->pausePlayButton->setCheckable(true);
 
     //songPro folder under users documents folder
@@ -64,8 +68,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
    //Set up freq scene
    visualizer.initScene();
-   //ui->graphicsView->setStyleSheet("background: transparent");
+   ui->graphicsView->setStyleSheet("background: transparent");
    ui->graphicsView->setScene(visualizer.getScene());
+   ui->graphicsView->setAlignment(Qt::AlignBottom|Qt::AlignLeft);
+   ui->graphicsView->lower();
 
 
    //Set up signal/slot to detect when selection changes
