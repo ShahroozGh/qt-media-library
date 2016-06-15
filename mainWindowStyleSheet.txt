@@ -1,0 +1,201 @@
+QPushButton {border-style: none;
+    background-color: #f7941d;
+    min-height: 25px;
+    min-width: 72px;
+    border-top-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+}
+
+QPushButton:hover {
+    background-color: #f1a758;
+}
+
+QPushButton:pressed {
+    background-color: #e87800;
+}
+
+QPushButton#pausePlayButton {
+    border-style: none;
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PlayIcon50.png);
+    background-color: rgba(246, 142, 30, 50%);
+    qproperty-iconSize: 40px;
+    min-height: 42px;
+    min-width: 42 px;
+    border-top-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+QPushButton#pausePlayButton:checked {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon50.png);
+    background-color: rgba(246, 142, 30, 50%);
+
+
+}
+
+QPushButton#pausePlayButton:hover:!checked {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PlayIcon.png);
+    background-color: rgba(246, 142, 30, 100%);
+
+
+}
+
+QPushButton#pausePlayButton:hover:checked {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon.png);
+    background-color: rgba(246, 142, 30, 100%);
+
+
+}
+
+QPushButton#pausePlayButton:pressed:!checked {
+border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PlayIcon.png);
+    background-color: rgba(232, 120, 0, 100%);
+
+
+}
+
+QPushButton#pausePlayButton:pressed:checked {
+border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon.png);
+    background-color: rgba(232, 120, 0, 100%);
+
+
+}
+/*
+QPushButton#pausePlayButton:!checked {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PlayIcon.png);
+
+}
+
+QPushButton#pausePlayButton:checked {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon.png);
+
+}
+*/
+
+QPushButton#forwardButton {
+    border-style: none;
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/forwardIcon50.png);
+    background-color: rgba(246, 142, 30, 50%);
+    qproperty-iconSize: 34px;
+    min-height: 34px;
+    min-width: 34px;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-bottom-left-radius: 9px;
+}
+
+QPushButton#forwardButton:hover {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/forwardIcon.png);
+    background-color: rgba(246, 142, 30, 100%);
+
+
+}
+
+QPushButton#forwardButton:pressed {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/forwardIcon.png);
+    background-color: rgba(232, 120, 0, 100%);
+
+
+}
+
+
+QPushButton#backButton {
+    border-style: none;
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/BackIcon50.png);
+    qproperty-iconSize: 34px;
+    background-color: rgba(246, 142, 30, 50%);
+    min-height: 34px;
+    min-width: 34px;
+    border-top-right-radius: 9px;
+    border-top-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-bottom-left-radius: 0px;
+}
+
+QPushButton#backButton:hover {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/BackIcon.png);
+    background-color: rgba(246, 142, 30, 100%);
+
+
+}
+
+QPushButton#backButton:pressed {
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/BackIcon.png);
+    background-color: rgba(232, 120, 0, 100%);
+
+}
+
+QMainWindow {
+    background-color: #232b35
+}
+QTreeView {
+    background-color: #757581;
+    alternate-background-color: #6c6b82;
+    selection-color: #f7941d;
+    selection-background-color: #f7941d;
+}
+
+QTreeView::item::selected{
+    color: #ffffff;
+    background-color: #f7941d;
+}
+
+QLineEdit {
+    background-color: #45403c;
+    padding: 0 8px;
+    border-top-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+}
+
+
+QSlider::groove:horizontal {
+    background: #757581;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider::sub-page:horizontal {
+    background: #f68e1e;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider::add-page:horizontal {
+    background: #757581;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider::handle:horizontal {
+    background: #f68e1e;
+    width: 16px;
+    margin-top: -3px;
+    margin-bottom: -3px;
+    border-radius: 7px;
+}
+
+QSlider::handle:horizontal:hover {
+    background: #f1a758;
+    width: 16px;
+    margin-top: -3px;
+    margin-bottom: -3px;
+    border-radius: 7px;
+}
+
+QSlider::sub-page:horizontal:disabled {
+    background: #bbb;
+    border-color: #999;
+}
+
+QSlider::add-page:horizontal:disabled {
+    background: #eee;
+    border-color: #999;
+}
+
+QSlider::handle:horizontal:disabled {
+    background: #eee;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}

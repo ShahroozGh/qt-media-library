@@ -38,7 +38,9 @@ void SpectrumVisualizer::plotSpectrum(std::vector<float> data)
             volVal = 10 * volVal;
             //volVal = log10(10 + i)*volVal;
 
-            float height = -100 * log10(volVal + 1);
+
+            //float height = -100 * log10(volVal + 1);
+            float height = -100 * volVal;
             bars[i]->setRect(4*i, 0, 1, height);
         }
     scene->update(scene->sceneRect());

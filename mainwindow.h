@@ -86,17 +86,21 @@ private slots:
 
     void on_trackSlider_sliderMoved(int position);
 
-    void updatePosition(qint64 position);
+    //void updatePosition(qint64 position);
 
-    void updateDuration(qint64 duration);
+    //void updateDuration(qint64 duration);
 
-    void slot_mediaStatusChanged(QMediaPlayer::MediaStatus stat);
+    //void slot_mediaStatusChanged(QMediaPlayer::MediaStatus stat);
 
     void on_forwardButton_clicked();
 
     void on_backButton_clicked();
 
     void on_linkMusicButton_clicked();
+
+    void on_trackSlider_actionTriggered(int action);
+
+    void on_volumeSlider_actionTriggered(int action);
 
 private:
     Ui::MainWindow *ui;
@@ -110,11 +114,13 @@ private:
 
     SpectrumVisualizer visualizer;
 
-
+    bool validateSongList(QString fileName);
     void addFile(std::string path);
     void writeSaveFile(QFile &file);
     void changesMade();
     void changesSaved();
+
+    void setStyleSheets();
 
 
 };

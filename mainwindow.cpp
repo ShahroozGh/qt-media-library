@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     unsavedChanges = true;
     this->setWindowTitle("Untitled*");
+    //this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint );
 
     //this->setStyleSheet("background-color: grey;");
     //this->setPalette( QPalette(QColor(55,55,55)) );
@@ -18,17 +19,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pausePlayButton->setCheckable(true);
 
     //songPro folder under users documents folder
-    QIcon forward(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\forwardButton.png");
-    QIcon back(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\backButton.png");
-    ui->forwardButton->setIcon(forward);
-    ui->backButton->setIcon(back);
+    QIcon forward(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\forwardIcon.png");
+    QIcon back(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\backIcon.png");
+    //ui->forwardButton->setIcon(forward);
+    //ui->backButton->setIcon(back);
+
+
     //ui->pausePlayButton->setIcon();
 
     QIcon* playPause = new QIcon();
 
-    playPause->addPixmap(QPixmap(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\pauseButton.png"),QIcon::Normal,QIcon::On);
-    playPause->addPixmap(QPixmap(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\playButton.png"),QIcon::Normal,QIcon::Off);
-    ui->pausePlayButton->setIcon(*playPause);
+    playPause->addPixmap(QPixmap(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\pauseIcon.png"),QIcon::Normal,QIcon::On);
+    playPause->addPixmap(QPixmap(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\playIcon.png"),QIcon::Normal,QIcon::Off);
+    //ui->pausePlayButton->setIcon(*playPause);
+
 
     player = new QMediaPlayer;
 
@@ -78,15 +82,16 @@ MainWindow::MainWindow(QWidget *parent) :
    QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
    QObject::connect(songItemModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(slot_itemChanged(QStandardItem*)));
 
+   setStyleSheets();
    //Timer to signal update loop for fft
    updateTimer = new QTimer(this);
    connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateLoop()));
    updateTimer->start(30);
 
    //Delete
-   QObject::connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(updatePosition(qint64)));
-   QObject::connect(player, SIGNAL(durationChanged(qint64)), this, SLOT(updateDuration(qint64)));
-   QObject::connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(slot_mediaStatusChanged(QMediaPlayer::MediaStatus)));
+   //QObject::connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(updatePosition(qint64)));
+   //QObject::connect(player, SIGNAL(durationChanged(qint64)), this, SLOT(updateDuration(qint64)));
+   //QObject::connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(slot_mediaStatusChanged(QMediaPlayer::MediaStatus)));
 
 }
 
@@ -94,6 +99,118 @@ MainWindow::~MainWindow()
 {
     delete ui;
     //Free fmod resources
+}
+
+
+//UI Look and Feel
+void MainWindow::setStyleSheets()
+{
+
+    QString fileName = "C:\\Users\\Shahrooz\\Documents\\songDb\\mainWindowStyleSheet.txt";
+    //Read stylesheet file
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
+    QTextStream in(&file);
+    QString text;
+    text = in.readAll();
+    file.close();
+
+    this->setStyleSheet(text);
+
+    /*
+    this->setStyleSheet("QPushButton {border-style: none;"
+                            "background-color: #f7941d;"
+                            "min-height: 25px;"
+                            "min-width: 72px;"
+                            "border-top-right-radius: 13px;"
+                            "border-bottom-left-radius: 13px;"
+                        "}"
+
+                        "QMainWindow {"
+                            "background-color: #232b35"
+                        "}"
+                        "QTreeView {"
+                            "background-color: #757581;"
+                            "alternate-background-color: #6c6b82;"
+                            "selection-color: #f7941d;"
+                            "selection-background-color: #f7941d;"
+                        "}"
+
+                        "QTreeView::item::selected{"
+                            "color: #ffffff;"
+                            "background-color: #f7941d;"
+                        "}"
+
+                        "QLineEdit {"
+                            "background-color: #45403c;"
+                            "padding: 0 8px;"
+                            "border-top-right-radius: 13px;"
+                            "border-bottom-left-radius: 13px;"
+                        "}"
+
+                        "QSlider::groove:horizontal {"
+                        "border: 1px solid #bbb;"
+                        "background: white;"
+                        "height: 10px;"
+                        "border-radius: 4px;"
+                        "}"
+
+                        "QSlider::sub-page:horizontal {"
+                        "background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,"
+                            "stop: 0 #66e, stop: 1 #bbf);"
+                        "background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,"
+                            "stop: 0 #bbf, stop: 1 #55f);"
+                        "border: 1px solid #777;"
+                        "height: 10px;"
+                        "border-radius: 4px;"
+                        "}"
+
+                        "QSlider::add-page:horizontal {"
+                        "background: #fff;"
+                        "border: 1px solid #777;"
+                        "height: 10px;"
+                        "border-radius: 4px;"
+                        "}"
+
+                        "QSlider::handle:horizontal {"
+                        "background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
+                            "stop:0 #eee, stop:1 #ccc);"
+                        "border: 1px solid #777;"
+                        "width: 13px;"
+                        "margin-top: -2px;"
+                        "margin-bottom: -2px;"
+                        "border-radius: 4px;"
+                        "}"
+
+                        "QSlider::handle:horizontal:hover {"
+                        "background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
+                            "stop:0 #fff, stop:1 #ddd);"
+                        "border: 1px solid #444;"
+                        "border-radius: 4px;"
+                        "}"
+
+                        "QSlider::sub-page:horizontal:disabled {"
+                        "background: #bbb;"
+                        "border-color: #999;"
+                        "}"
+
+                        "QSlider::add-page:horizontal:disabled {"
+                        "background: #eee;"
+                        "border-color: #999;"
+                        "}"
+
+                        "QSlider::handle:horizontal:disabled {"
+                        "background: #eee;"
+                        "border: 1px solid #aaa;"
+                        "border-radius: 4px;"
+                        "}"
+
+                        );
+                        */
+
+
+
+
 }
 
 //Drag and Drop events
@@ -162,11 +279,7 @@ void MainWindow::addFile(std::string path)
     //Insert list of items as a row
     songItemModel->insertRow(0, list);
 
-    //Clear text boxes
-    ui->lineEditTitle->clear();
-    ui->lineEditArtist->clear();
-    ui->lineEditAlbum->clear();
-    ui->lineEditGenre->clear();
+
 
     //Resize columns
     ui->treeView->resizeColumnToContents(0);
@@ -183,10 +296,11 @@ void MainWindow::addFile(std::string path)
 void MainWindow::on_pushButtonAdd_clicked()
 {
     //Get text from lineEdit txt boxes
-    QString title = ui->lineEditTitle->text();
-    QString artist = ui->lineEditArtist->text();
-    QString album = ui->lineEditAlbum->text();
-    QString genre = ui->lineEditGenre->text();
+    QString title;
+    QString artist;
+    QString album;
+    //QString genre = ui->lineEditGenre->text();
+    QString genre;
 
     //Check if title is empty
     if (!title.isEmpty())
@@ -214,11 +328,6 @@ void MainWindow::on_pushButtonAdd_clicked()
     //Insert list of items as a row
     songItemModel->insertRow(0, list);
 
-    //Clear text boxes
-    ui->lineEditTitle->clear();
-    ui->lineEditArtist->clear();
-    ui->lineEditAlbum->clear();
-    ui->lineEditGenre->clear();
 
     //Resize columns
     ui->treeView->resizeColumnToContents(0);
@@ -393,10 +502,13 @@ void MainWindow::changesSaved()
     this->setWindowTitle(currentUser.remove("*"));
 
 }
+
+
 //-----------------------------------------------------------
 void MainWindow::on_actionOpen_triggered()
 {
     //Use message box to give user opportunity to save changes
+    //Should only do this if there are unsaved changes
     QMessageBox msgBox;
     msgBox.setText("The document has been modified.");
     msgBox.setInformativeText("Do you want to save your changes?");
@@ -415,6 +527,7 @@ void MainWindow::on_actionOpen_triggered()
           break;
       case QMessageBox::Cancel:
           // Cancel was clicked
+          //call return so that we dont continue with the open operation
             return;
           break;
       default:
@@ -427,15 +540,23 @@ void MainWindow::on_actionOpen_triggered()
 
     if (!fileName.isEmpty()){
 
-        //Get name of file and setTitle to this
-        currentUser = QFileInfo(fileName).baseName();
-        this->setWindowTitle(currentUser);
+
 
         QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly)){
             QMessageBox::critical(this, tr("Error"), tr("Could not open"));
             return;
         }
+
+        if (!validateSongList(fileName)){
+            QMessageBox::critical(this, tr("Error"), tr("Could not open file. Invalid format."));
+            std::cout << "Invalid file! Will not open." << std::endl;
+            return;
+
+        }
+        //Get name of file and setTitle to this
+        currentUser = QFileInfo(fileName).baseName();
+        this->setWindowTitle(currentUser);
 
         //Read file
 
@@ -444,6 +565,7 @@ void MainWindow::on_actionOpen_triggered()
         QString line;
         QStringList list;
         int row = 0;
+
 
         //Clear current songItemModel and reset header
         songItemModel->clear();
@@ -629,6 +751,48 @@ void MainWindow::on_linkMusicButton_clicked()
 
 }
 
+bool MainWindow::validateSongList(QString fileName)
+{
+    bool isValid = true;
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)){
+        QMessageBox::critical(this, tr("Error"), tr("Could not open"));
+        return false;
+    }
+
+    //Read file
+
+    QTextStream input(&file);
+
+    QString line;
+    QStringList list;
+    int row = 0;
+
+    //Read data from text file into song item model
+    isLoading = true;
+    do {
+        line = input.readLine();
+        qDebug() << line;
+
+        if(!line.isNull())
+        {
+            list = line.split(";");
+            if (list.size() != 5){
+                isValid = false;
+                break;
+            }
+            row++;
+        }
+    }while(!line.isNull());
+
+
+    file.close();
+    if (isValid)
+        return true;
+    else
+        return false;
+}
+
 
 
 //Fmod requires an update function to be called periodically for fft to work
@@ -732,16 +896,7 @@ void MainWindow::on_actionNew_triggered()
 }
 //-----------MUSIC CONTROLS-----------------//-------------------------------------------------------------------------------------
 
-void MainWindow::slot_mediaStatusChanged(QMediaPlayer::MediaStatus stat)
-{
-    qDebug() << "slot media stat";
-    qDebug() << stat;
-    if (stat == QMediaPlayer::LoadedMedia)
-    {
-        player->play();
-    }
 
-}
 
 /*void MainWindow::on_pausePlayButton_toggled(bool checked)
 {
@@ -829,6 +984,12 @@ void MainWindow::on_pausePlayButton_clicked(bool checked)
 //Volume slider
 void MainWindow::on_volumeSlider_sliderMoved(int position)
 {
+    //fmodSys.setVolume(position/100.0f);
+}
+
+void MainWindow::on_volumeSlider_actionTriggered(int action)
+{
+    int position = ui->volumeSlider->sliderPosition();
     fmodSys.setVolume(position/100.0f);
 }
 
@@ -836,6 +997,7 @@ void MainWindow::on_volumeSlider_sliderMoved(int position)
 //Change to action triggered
 void MainWindow::on_trackSlider_sliderMoved(int position)
 {
+    /*
     int max = ui->trackSlider->maximum();
     int min = ui->trackSlider->minimum();
 
@@ -843,24 +1005,23 @@ void MainWindow::on_trackSlider_sliderMoved(int position)
     float percent = position/(float)(max-min);
 
     fmodSys.setPosition(percent * fmodSys.getLength());
+    */
 }
 
-void MainWindow::updatePosition(qint64 position)
+void MainWindow::on_trackSlider_actionTriggered(int action)
 {
-    ui->trackSlider->setValue(position);
+    int position = ui->trackSlider->sliderPosition();
+    int max = ui->trackSlider->maximum();
+    int min = ui->trackSlider->minimum();
 
-    QTime duration(0, position / 60000, qRound((position % 60000) / 1000.0));
-    //positionLabel->setText(duration.toString(tr("mm:ss")));
-    ui->lcdNumber->display(duration.toString(tr("mm:ss")));
-}
 
-void MainWindow::updateDuration(qint64 duration)
-{
-        ui->trackSlider->setRange(0, duration);
-        ui->trackSlider->setEnabled(duration > 0);
-        ui->trackSlider->setPageStep(duration / 10);
+    float percent = position/(float)(max-min);
+
+    fmodSys.setPosition(percent * fmodSys.getLength());
 
 }
+
+
 
 void MainWindow::on_forwardButton_clicked()
 {
@@ -894,5 +1055,9 @@ void MainWindow::on_backButton_clicked()
         fmodSys.seek((int)increment * -1);
     }
 }
+
+
+
+
 
 
