@@ -35,6 +35,20 @@
     </property>
     <item row="2" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="2" column="0">
+       <widget class="QPushButton" name="addArtButton">
+        <property name="text">
+         <string> Add Artwork...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="linkMusicButton">
+        <property name="text">
+         <string>Add Music File</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="albumCoverLabel">
         <property name="minimumSize">
@@ -54,20 +68,6 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="linkMusicButton">
-        <property name="text">
-         <string>Add Music File</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="addArtButton">
-        <property name="text">
-         <string> Add Artwork...</string>
         </property>
        </widget>
       </item>
@@ -124,6 +124,9 @@
       </property>
       <property name="alternatingRowColors">
        <bool>true</bool>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
@@ -219,13 +222,20 @@
         </item>
         <item alignment="Qt::AlignVCenter">
          <widget class="QSlider" name="trackSlider">
+          <property name="maximum">
+           <number>9999999</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item alignment="Qt::AlignVCenter">
-         <widget class="QLCDNumber" name="lcdNumber"/>
+        <item>
+         <widget class="QLabel" name="timeLabel">
+          <property name="text">
+           <string>00:00/00:00</string>
+          </property>
+         </widget>
         </item>
         <item alignment="Qt::AlignVCenter">
          <widget class="QCheckBox" name="checkBoxMute">
@@ -249,26 +259,26 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item alignment="Qt::AlignTop">
-         <widget class="QPushButton" name="pushButtonDelete">
-          <property name="text">
-           <string>Delete</string>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignTop">
-         <widget class="QPushButton" name="pushButtonAdd">
-          <property name="text">
-           <string>Add</string>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
+     </layout>
+    </item>
+    <item row="3" column="4">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item alignment="Qt::AlignTop">
+       <widget class="QPushButton" name="pushButtonDelete">
+        <property name="text">
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignTop">
+       <widget class="QPushButton" name="pushButtonAdd">
+        <property name="text">
+         <string>Add</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -292,7 +302,14 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionPreferences"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -320,6 +337,11 @@
   <action name="actionNew">
    <property name="text">
     <string>New</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences...</string>
    </property>
   </action>
  </widget>

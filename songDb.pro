@@ -33,4 +33,4 @@ INCLUDEPATH += $$PWD/'../../../../Program Files (x86)/FMOD SoundSystem/FMOD Stud
 DEPENDPATH += $$PWD/'../../../../Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/inc'
 
 DISTFILES += \
-    mainWindowStyleSheet.txt
+    mainWindowStyleSheet.css

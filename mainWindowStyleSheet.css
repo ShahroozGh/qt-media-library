@@ -1,9 +1,64 @@
-QPushButton {border-style: none;
+QMainWindow {
+    background-color: #232b35;
+}
+
+/* ----------------------MENU BAR------------------------- */
+QMenuBar {
+    background-color: #232b35;
+}
+
+QMenuBar::item {
+    color: #dfe1df;
+    spacing: 3px; /* spacing between menu bar items */
+    padding: 1px 4px;
+    background: transparent;
+    border-radius: 0px;
+}
+
+QMenuBar::item:selected { /* when selected using mouse or keyboard */
+    background: #a8a8a8;
+}
+
+QMenuBar::item:pressed {
+    background: #888888;
+}
+
+/* ----------------------LABELS------------------------- */
+QLabel#timeLabel {
+    color: white;
+    font-family: "Roboto Lt";
+    font-weight: bold;
+}
+
+QLabel#albumCoverLabel {
+    color: transparent;
+    font-family: "Roboto Lt";
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+
+/* -------------------PUSH BUTTONS---------------------- */
+QPushButton {
+
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: #be6d16;
+
+
     background-color: #f7941d;
     min-height: 25px;
     min-width: 72px;
-    border-top-right-radius: 13px;
-    border-bottom-left-radius: 13px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    font-family: "Keep Calm Med";
+    font-weight: bold;
+    font-size: 12px;
+    color: #dfe1df;
+
 }
 
 QPushButton:hover {
@@ -28,6 +83,7 @@ QPushButton#pausePlayButton {
 }
 
 QPushButton#pausePlayButton:checked {
+    border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon50.png);
     background-color: rgba(246, 142, 30, 50%);
 
@@ -35,6 +91,7 @@ QPushButton#pausePlayButton:checked {
 }
 
 QPushButton#pausePlayButton:hover:!checked {
+    border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PlayIcon.png);
     background-color: rgba(246, 142, 30, 100%);
 
@@ -42,6 +99,7 @@ QPushButton#pausePlayButton:hover:!checked {
 }
 
 QPushButton#pausePlayButton:hover:checked {
+    border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon.png);
     background-color: rgba(246, 142, 30, 100%);
 
@@ -49,25 +107,29 @@ QPushButton#pausePlayButton:hover:checked {
 }
 
 QPushButton#pausePlayButton:pressed:!checked {
-border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PlayIcon.png);
+    border-style: none;
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PlayIcon.png);
     background-color: rgba(232, 120, 0, 100%);
 
 
 }
 
 QPushButton#pausePlayButton:pressed:checked {
-border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon.png);
+border-style: none;
+    border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon.png);
     background-color: rgba(232, 120, 0, 100%);
 
 
 }
 /*
 QPushButton#pausePlayButton:!checked {
+border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PlayIcon.png);
 
 }
 
 QPushButton#pausePlayButton:checked {
+border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/PauseIcon.png);
 
 }
@@ -87,6 +149,7 @@ QPushButton#forwardButton {
 }
 
 QPushButton#forwardButton:hover {
+border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/forwardIcon.png);
     background-color: rgba(246, 142, 30, 100%);
 
@@ -94,6 +157,7 @@ QPushButton#forwardButton:hover {
 }
 
 QPushButton#forwardButton:pressed {
+border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/forwardIcon.png);
     background-color: rgba(232, 120, 0, 100%);
 
@@ -115,6 +179,7 @@ QPushButton#backButton {
 }
 
 QPushButton#backButton:hover {
+border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/BackIcon.png);
     background-color: rgba(246, 142, 30, 100%);
 
@@ -122,34 +187,98 @@ QPushButton#backButton:hover {
 }
 
 QPushButton#backButton:pressed {
+border-style: none;
     border-image: url(C:/Users/Shahrooz/Documents/songPro/resources/BackIcon.png);
     background-color: rgba(232, 120, 0, 100%);
 
 }
 
-QMainWindow {
-    background-color: #232b35
-}
+
+/* ----------------------LIST VIEWS--------------------- */
 QTreeView {
     background-color: #757581;
     alternate-background-color: #6c6b82;
-    selection-color: #f7941d;
-    selection-background-color: #f7941d;
+    /*selection-color: #f7941d;*/
+    /*selection-background-color: #f7941d;*/
+    font-family: "Roboto";
+    font-weight: normal;
+    color: white;
+
+    border: 0px;
+    border-radius: 3px;
+
 }
 
-QTreeView::item::selected{
+QTreeView::item {
+
+    min-height: 30px;
+}
+
+QTreeView::item:hover {
+    background-color: #e2bb91;
+    font-family: "Roboto";
+    font-weight: bold;
+
+}
+
+QTreeView::item:selected{
     color: #ffffff;
     background-color: #f7941d;
+    font-weight: bold;
+
 }
 
+QHeaderView {
+
+    background-color: rgba(0,0,0,0%);
+}
+
+QHeaderView::section {
+    /*background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #616161, stop: 0.5 #505050,
+                                      stop: 0.6 #434343, stop:1 #656565);*/
+    min-height: 30px;
+
+    background-color: #13171c;
+    color: white;
+    padding-left: 4px;
+
+    border-left: 0px solid gray;
+    border-right: 1px solid gray;
+    border-bottom: 0px solid gray;
+    border-top: 0px solid gray;
+
+    border-radius: 0px;
+}
+
+QHeaderView::section:first {
+    border-top-left-radius: 3px;
+}
+
+QHeaderView::section:last {
+    border-top-right-radius: 3px;
+}
+
+QHeaderView::section:checked
+{
+    background-color: red;
+}
+
+
+/* ----------------------TEXT FIELDS------------------------- */
 QLineEdit {
     background-color: #45403c;
     padding: 0 8px;
     border-top-right-radius: 13px;
     border-bottom-left-radius: 13px;
+
+    color: white;
+    font-family: "Roboto Lt";
+    /*font-weight: bold;*/
+    font-size: 12px;
 }
 
-
+/* ----------------------SLIDERS------------------------- */
 QSlider::groove:horizontal {
     background: #757581;
     height: 10px;
@@ -199,3 +328,5 @@ QSlider::handle:horizontal:disabled {
     border: 1px solid #aaa;
     border-radius: 4px;
 }
+
+

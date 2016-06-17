@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->volumeSlider->setMaximum(100);
 
-    ui->lcdNumber->setPalette(Qt::black);
+    //ui->lcdNumber->setPalette(Qt::black);
 
     //True if file is currently being read
     isLoading = false;
@@ -105,8 +105,46 @@ MainWindow::~MainWindow()
 //UI Look and Feel
 void MainWindow::setStyleSheets()
 {
+    //Load Custom Fonts
+    int id = QFontDatabase::addApplicationFont("C:/Users/Shahrooz/Documents/songPro/resources/Fonts/calm/KeepCalm-Medium.ttf");
+    qDebug() << "ID " << id;
+    if (id == -1){
+        std::cout << "Font Could Not Be loaded" << std::endl;
 
-    QString fileName = "C:\\Users\\Shahrooz\\Documents\\songDb\\mainWindowStyleSheet.txt";
+    }
+    else
+         QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+
+
+    id = QFontDatabase::addApplicationFont("C:/Users/Shahrooz/Documents/songPro/resources/Fonts/Roboto/Roboto-Light.ttf");
+    qDebug() << "ID 2: " << id;
+    if (id == -1){
+        std::cout << "Font 2 Could Not Be loaded" << std::endl;
+
+    }
+    else
+         QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+
+    id = QFontDatabase::addApplicationFont("C:/Users/Shahrooz/Documents/songPro/resources/Fonts/Roboto/Roboto-Thin.ttf");
+    qDebug() << "ID 3: " << id;
+    if (id == -1){
+        std::cout << "Font 3 Could Not Be loaded" << std::endl;
+
+    }
+    else
+         QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+
+    id = QFontDatabase::addApplicationFont("C:/Users/Shahrooz/Documents/songPro/resources/Fonts/Roboto/Roboto-Regular.ttf");
+    qDebug() << "ID 4: " << id;
+    if (id == -1){
+        std::cout << "Font 4 Could Not Be loaded" << std::endl;
+
+    }
+    else
+         QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    //QFont monospace(family);
+
+    QString fileName = "C:\\Users\\Shahrooz\\Documents\\songDb\\mainWindowStyleSheet.css";
     //Read stylesheet file
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
@@ -818,9 +856,19 @@ void MainWindow::updateLoop()
 
         ui->trackSlider->setValue(trackBarLength * percent);
 
-        QTime duration(0, fmodSys.getPosition() / 60000, qRound((fmodSys.getPosition() % 60000) / 1000.0));
+        QTime duration(0, fmodSys.getPosition() / 60000, (fmodSys.getPosition() % 60000 / 1000.0));
+        QTime totalDuration(0, fmodSys.getLength() / 60000, (fmodSys.getLength() % 60000 / 1000.0));
+        if (!duration.isValid()){
+            std::cout << "Not Valid Time Min:" << fmodSys.getPosition() / 60000 << " Sec: " << (fmodSys.getPosition() % 60000 / 1000.0) << std::endl;
+        }
+        if (duration.isNull()){
+            std::cout << "Null Time"  << std::endl;
+        }
         //positionLabel->setText(duration.toString(tr("mm:ss")));
-        ui->lcdNumber->display(duration.toString(tr("mm:ss")));
+        //ui->lcdNumber->display(duration.toString(tr("mm:ss")));
+        if (!duration.isNull() && duration.isValid())
+            ui->timeLabel->setText(duration.toString(tr("m:ss")) + "/" + totalDuration.toString("m:ss"));
+
     }
 }
 
