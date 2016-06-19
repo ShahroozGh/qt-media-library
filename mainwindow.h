@@ -26,6 +26,10 @@
 
 #include <QTimer>
 
+#include <QGraphicsDropShadowEffect>
+
+
+
 #include "AudioSystem.h"
 
 #include "SpectrumVisualizer.h"

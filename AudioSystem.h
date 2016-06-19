@@ -19,11 +19,23 @@ public:
 		"C:/Users/Shahrooz/Music/City and Colour/City And Colour - The Hurry And The Harm 2013 Funk 320kbps CBR MP3 [VX]/04 City and Colour - The Lonely Life.mp3",
 		"C:/Users/Shahrooz/Music/Muse - Drones (2015) 320 Kbps + Digital Booklet -AryaN_L33T-[GloDLS]/05 Reapers.mp3" };
 
+
+    struct SongInfo{
+        std::string title;
+        std::string artist;
+        std::string album;
+        std::string genre;
+        int year;
+        unsigned int duration_ms;
+
+    };
+
     std::string audioPath;
 
 	//FMOD stuff
 	FMOD::System     *system;
-	FMOD::Sound      *sound, *sound_to_play;
+    FMOD::Sound      *sound, *sound_to_play;
+    FMOD::Sound *tagSound; //Used to store sound for retreiving tag
 	FMOD::Channel    *channel = 0;
 	FMOD_RESULT       result;
 	unsigned int      version;
@@ -74,6 +86,11 @@ public:
     std::string FMOD_Result_toString(FMOD_RESULT result);
 
     std::string getCurrentSongPath();
+
+
+    SongInfo getTagData(std::string audioFilePath);
+    std::string getTagString(std::string tagType, FMOD::Sound *tempSound);
+    int getTagInt(std::string tagType, FMOD::Sound *tempSound);
 
 
 

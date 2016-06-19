@@ -37,6 +37,38 @@ QLabel#albumCoverLabel {
     border-radius: 10px;
 }
 
+QLabel#titleLabel {
+    background-color: transparent;
+    color: white;
+    font-family: "Roboto Lt";
+    font-weight: normal;
+    margin: 0px;
+    padding: 0px;
+
+}
+
+QLabel#artistLabel {
+    background-color: transparent;
+    color: white;
+    font-family: "Roboto Lt";
+    font-weight: normal;
+    margin: 0px;
+    padding: 0px;
+
+}
+
+QLabel#albumLabel {background-color: transparent;
+    color: white;
+    font-family: "Roboto Lt";
+    font-weight: normal;
+    margin: 0px;
+    padding: 0px;
+}
+
+QFrame#songInfoFrame {
+    background-color: #45403c;
+    border-radius: 3px;
+}
 
 /* -------------------PUSH BUTTONS---------------------- */
 QPushButton {
@@ -54,7 +86,8 @@ QPushButton {
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px;
     border-bottom-right-radius: 3px;
-    font-family: "Keep Calm Med";
+    font-family: "Lucidia Sans Unicode";
+    /*font-family: "Keep Calm Med";*/
     font-weight: bold;
     font-size: 12px;
     color: #dfe1df;

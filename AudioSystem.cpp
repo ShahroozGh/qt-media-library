@@ -68,6 +68,217 @@ void AudioSystem::initFMOD()
 	}
 }
 
+AudioSystem::SongInfo AudioSystem::getTagData(std::string audioFilePath)
+{
+    SongInfo songData;
+
+
+    //FMOD stuff
+    FMOD::Sound      *tempSound;
+
+
+    //Start a new stream temporarily so we can access song data
+    result = system->createStream(audioFilePath.c_str(), FMOD_LOOP_NORMAL | FMOD_ACCURATETIME | FMOD_2D, 0, &tempSound);
+    if (result != FMOD_OK) {
+        std::cout << "CREATE STREAM PROBLEM in getTagData(): " << FMOD_Result_toString(result) << std::endl;
+        return songData;
+    }
+
+
+    //Get tag data
+    int numOfTags;
+    result = tempSound->getNumTags(&numOfTags, 0);
+    if (result != FMOD_OK) {
+        std::cout << "GET NUM TAGS ERROR in getTagData(): " << FMOD_Result_toString(result) << std::endl;
+    }
+
+    //Note these are ID3v2 names
+    songData.title = getTagString("TIT2", tempSound);
+    songData.artist = getTagString("TPE1", tempSound);
+    songData.album = getTagString("TALB", tempSound);
+    songData.genre = getTagString("TCON", tempSound);
+
+    songData.year = getTagInt("TYER", tempSound);
+    result = tempSound->getLength(&songData.duration_ms, FMOD_TIMEUNIT_MS);
+    if ((result != FMOD_OK) && (result != FMOD_ERR_INVALID_HANDLE))
+    {
+         std::cout << "GET LENGTH ERROR in getTagData(): " << FMOD_Result_toString(result) << std::endl;
+    }
+
+
+
+    std::cout <<  "DUMPING TAG DATA COMPLETE" << std::endl;
+
+
+    tempSound->release();
+    return songData;
+
+}
+
+std::string AudioSystem::getTagString(std::string tagType, FMOD::Sound *tempSound)
+{
+    std::string outputData;
+
+    std::vector<FMOD_TAG> tags;
+
+    //Get all possible tags with this tagType
+    int index = 0;
+    do {
+        FMOD_TAG oneTag;
+
+        result = tempSound->getTag(tagType.c_str(), index, &oneTag);
+        if (result != FMOD_OK) {
+            std::cout << "GET TAG ERROR in getTagString(): " << FMOD_Result_toString(result) << std::endl;
+        }
+        else{
+            tags.push_back(oneTag);
+        }
+        index++;
+    }while(result != FMOD_ERR_TAGNOTFOUND);
+
+    //Dump Tag data for each tag
+    std::cout <<  "DUMPING TAG DATA" << std::endl;
+    for (int i = 0; i < tags.size(); i++){
+        std::cout << "TAG INFO " << i << "--------------------" << std::endl;
+        if (tags[i].type == FMOD_TAGTYPE_ID3V1)
+            std::cout <<  "TAG TYPE: ID3V1 > " << tags[i].type << std::endl;
+        else if (tags[i].type == FMOD_TAGTYPE_ID3V2)
+            std::cout <<  "TAG TYPE: ID3V2 > " << tags[i].type << std::endl;
+        else
+            std::cout <<  "TAG TYPE: > " << tags[i].type << std::endl;
+
+        std::cout <<  "TAG NAME: " << tags[i].name << std::endl;
+
+
+
+
+        //Need to store returned data as a string
+        //Check format of data and convert to std::string if possible
+        if (tags[i].datatype == FMOD_TAGDATATYPE_STRING)
+        {
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_STRING > " << tags[i].datatype << std::endl;
+            outputData = std::string((char*)tags[i].data);
+
+        }
+        else if (tags[i].datatype == FMOD_TAGDATATYPE_STRING_UTF16)
+        {
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_STRING_UTF16 > " << tags[i].datatype << std::endl;
+            //Convert to regular string
+            std::wstring wideString((wchar_t*)tags[i].data);
+            //New string
+            std::string str(wideString.begin() + 1, wideString.end()); // + 1 to skip BOM character
+            outputData = str;
+
+        }
+        else if (tags[i].datatype == FMOD_TAGDATATYPE_STRING_UTF16BE)
+        {
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_STRING_UTF16BE > " << tags[i].datatype << std::endl;
+            std::wstring wideString((wchar_t*)tags[i].data);
+            //New string
+            std::string str(wideString.begin() + 1, wideString.end()); // + 1 to skip BOM character
+            outputData = str;
+
+        }
+        else if (tags[i].datatype == FMOD_TAGDATATYPE_STRING_UTF8)
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_STRING_UTF8 > " << tags[i].datatype << std::endl;
+        else
+            std::cout <<  "TAG DTYPE: ??? > " << tags[i].datatype << std::endl;
+
+        std::cout << "TAG DATA: " << outputData << std::endl;
+
+    }
+
+    return outputData;
+}
+
+int AudioSystem::getTagInt(std::string tagType, FMOD::Sound *tempSound)
+{
+    int outputData;
+
+    std::vector<FMOD_TAG> tags;
+
+    //Get all possible tags with this tagType
+    int index = 0;
+    do {
+        FMOD_TAG oneTag;
+
+        result = tempSound->getTag(tagType.c_str(), index, &oneTag);
+        if (result != FMOD_OK) {
+            std::cout << "GET TAG ERROR in getTagString(): " << FMOD_Result_toString(result) << std::endl;
+        }
+        else{
+            tags.push_back(oneTag);
+        }
+        index++;
+    }while(result != FMOD_ERR_TAGNOTFOUND);
+
+    //Dump Tag data for each tag
+    std::cout <<  "DUMPING TAG DATA" << std::endl;
+    for (int i = 0; i < tags.size(); i++){
+        std::cout << "TAG INFO " << i << "--------------------" << std::endl;
+        if (tags[i].type == FMOD_TAGTYPE_ID3V1)
+            std::cout <<  "TAG TYPE: ID3V1 > " << tags[i].type << std::endl;
+        else if (tags[i].type == FMOD_TAGTYPE_ID3V2)
+            std::cout <<  "TAG TYPE: ID3V2 > " << tags[i].type << std::endl;
+        else
+            std::cout <<  "TAG TYPE: > " << tags[i].type << std::endl;
+
+        std::cout <<  "TAG NAME: " << tags[i].name << std::endl;
+
+
+
+
+        //Need to store returned data as a string
+        //Check format of data and convert to std::string if possible
+        if (tags[i].datatype == FMOD_TAGDATATYPE_INT)
+        {
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_INT > " << tags[i].datatype << std::endl;
+            outputData = *((int*)(tags[i].data));
+
+        }
+        else if (tags[i].datatype == FMOD_TAGDATATYPE_FLOAT)
+        {
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_FLOAT > " << tags[i].datatype << std::endl;
+            outputData = *((int*)(tags[i].data));
+
+        }
+        else if (tags[i].datatype == FMOD_TAGDATATYPE_STRING)
+        {
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_STRING > " << tags[i].datatype << std::endl;
+            outputData = std::stoi( std::string((char*)tags[i].data) );
+
+        }
+        else if (tags[i].datatype == FMOD_TAGDATATYPE_STRING_UTF16)
+        {
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_STRING_UTF16 > " << tags[i].datatype << std::endl;
+            //Convert to regular string
+            std::wstring wideString((wchar_t*)tags[i].data);
+            //New string
+            std::string str(wideString.begin() + 1, wideString.end()); // + 1 to skip BOM character
+            outputData = std::stoi(str);
+
+        }
+        else if (tags[i].datatype == FMOD_TAGDATATYPE_STRING_UTF16BE)
+        {
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_STRING_UTF16BE > " << tags[i].datatype << std::endl;
+            std::wstring wideString((wchar_t*)tags[i].data);
+            //New string
+            std::string str(wideString.begin() + 1, wideString.end()); // + 1 to skip BOM character
+            outputData = std::stoi(str);
+
+        }
+        else if (tags[i].datatype == FMOD_TAGDATATYPE_STRING_UTF8)
+            std::cout <<  "TAG DTYPE: FMOD_TAGDATATYPE_STRING_UTF8 > " << tags[i].datatype << std::endl;
+        else
+            std::cout <<  "TAG DTYPE: ??? > " << tags[i].datatype << std::endl;
+
+        std::cout << "TAG DATA: " << outputData << std::endl;
+
+    }
+
+    return outputData;
+}
+
 void AudioSystem::startPlayback()
 {
 	/*
@@ -398,3 +609,5 @@ std::string AudioSystem::getCurrentSongPath()
 {
     return audioPath;
 }
+
+

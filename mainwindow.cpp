@@ -155,6 +155,107 @@ void MainWindow::setStyleSheets()
 
     this->setStyleSheet(text);
 
+    QGraphicsDropShadowEffect* ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+    ui->treeView->setGraphicsEffect(ds);
+
+    QGraphicsDropShadowEffect* ds2 = new QGraphicsDropShadowEffect(this);
+    ds2->setBlurRadius(20);
+    ds2->setOffset(0,0);
+    ds2->setColor(Qt::black);
+
+    ui->pushButtonAdd->setGraphicsEffect(ds2);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->pushButtonDelete->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->addArtButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->linkMusicButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->pushButtonSearch->setGraphicsEffect(ds);
+
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->albumCoverLabel->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(30);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->lineEditSearch->setGraphicsEffect(ds);
+
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(5);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->trackSlider->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(5);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->volumeSlider->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->pausePlayButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->forwardButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->backButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(20);
+    ds->setOffset(0,0);
+    ds->setColor(Qt::black);
+
+    ui->songInfoFrame->setGraphicsEffect(ds);
+
+
+
     /*
     this->setStyleSheet("QPushButton {border-style: none;"
                             "background-color: #f7941d;"
@@ -296,12 +397,29 @@ void MainWindow::dropEvent(QDropEvent *event)
 //Attempt to fill in info given mp3 tag data
 void MainWindow::addFile(std::string path)
 {
+    AudioSystem::SongInfo tagInfo = fmodSys.getTagData(path);
+
+
     //Get text from lineEdit txt boxes
     QString title = QFileInfo(QString::fromStdString(path)).baseName();
     QString artist = "unknown";
     QString album = "unknown";
     QString genre = "unknown";
     QString pathName = QString::fromStdString(path);
+
+    //Replace unknown with tag info if found
+    if (!tagInfo.title.empty())
+        title = QString::fromStdString(tagInfo.title);
+
+    if (!tagInfo.artist.empty())
+        artist = QString::fromStdString(tagInfo.artist);
+
+    if (!tagInfo.album.empty())
+        album = QString::fromStdString(tagInfo.album);
+
+    if (!tagInfo.genre.empty())
+        genre = QString::fromStdString(tagInfo.genre);
+
 
     //Create item for each
     QStandardItem *titleItem = new QStandardItem(title);
@@ -379,6 +497,7 @@ void MainWindow::on_pushButtonAdd_clicked()
 //Delete Button
 void MainWindow::on_pushButtonDelete_clicked()
 {
+    /*
     //get index of selected row and remove
     int row = ui->treeView->currentIndex().row();
     songItemModel->removeRow(row);
@@ -392,6 +511,27 @@ void MainWindow::on_pushButtonDelete_clicked()
     //need to check if album art should be deleted from folder
 
     changesMade();
+    */
+
+    //Temp test to dump tag info
+    //Get path
+    QString path = songItemModel->item(ui->treeView->currentIndex().row(),4)->text();
+    QFile listFile(path);
+
+    if (listFile.exists()) //Check if it is an mp3 as well
+    {
+        qDebug() << "EXISTS!!!!!!!!!!!!!!!!";
+        //Attempt to load song and dump data
+        fmodSys.getTagData(path.toStdString());
+
+
+    }
+    else
+    {
+        qDebug() << "NO FILE FOUND";
+
+
+    }
 
 }
 //-----------------------------------------------------------
