@@ -42,6 +42,7 @@ QLabel#titleLabel {
     color: white;
     font-family: "Roboto Lt";
     font-weight: normal;
+    font-size: 12px;
     margin: 0px;
     padding: 0px;
 
@@ -52,6 +53,7 @@ QLabel#artistLabel {
     color: white;
     font-family: "Roboto Lt";
     font-weight: normal;
+    font-size: 12px;
     margin: 0px;
     padding: 0px;
 
@@ -61,6 +63,7 @@ QLabel#albumLabel {background-color: transparent;
     color: white;
     font-family: "Roboto Lt";
     font-weight: normal;
+    font-size: 12px;
     margin: 0px;
     padding: 0px;
 }

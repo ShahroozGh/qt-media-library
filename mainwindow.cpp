@@ -155,11 +155,13 @@ void MainWindow::setStyleSheets()
 
     this->setStyleSheet(text);
 
+    //Set Effects
     QGraphicsDropShadowEffect* ds = new QGraphicsDropShadowEffect(this);
     ds->setBlurRadius(20);
     ds->setOffset(0,0);
     ds->setColor(Qt::black);
     ui->treeView->setGraphicsEffect(ds);
+
 
     QGraphicsDropShadowEffect* ds2 = new QGraphicsDropShadowEffect(this);
     ds2->setBlurRadius(20);
@@ -256,98 +258,71 @@ void MainWindow::setStyleSheets()
 
 
 
-    /*
-    this->setStyleSheet("QPushButton {border-style: none;"
-                            "background-color: #f7941d;"
-                            "min-height: 25px;"
-                            "min-width: 72px;"
-                            "border-top-right-radius: 13px;"
-                            "border-bottom-left-radius: 13px;"
-                        "}"
-
-                        "QMainWindow {"
-                            "background-color: #232b35"
-                        "}"
-                        "QTreeView {"
-                            "background-color: #757581;"
-                            "alternate-background-color: #6c6b82;"
-                            "selection-color: #f7941d;"
-                            "selection-background-color: #f7941d;"
-                        "}"
-
-                        "QTreeView::item::selected{"
-                            "color: #ffffff;"
-                            "background-color: #f7941d;"
-                        "}"
-
-                        "QLineEdit {"
-                            "background-color: #45403c;"
-                            "padding: 0 8px;"
-                            "border-top-right-radius: 13px;"
-                            "border-bottom-left-radius: 13px;"
-                        "}"
-
-                        "QSlider::groove:horizontal {"
-                        "border: 1px solid #bbb;"
-                        "background: white;"
-                        "height: 10px;"
-                        "border-radius: 4px;"
-                        "}"
-
-                        "QSlider::sub-page:horizontal {"
-                        "background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,"
-                            "stop: 0 #66e, stop: 1 #bbf);"
-                        "background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,"
-                            "stop: 0 #bbf, stop: 1 #55f);"
-                        "border: 1px solid #777;"
-                        "height: 10px;"
-                        "border-radius: 4px;"
-                        "}"
-
-                        "QSlider::add-page:horizontal {"
-                        "background: #fff;"
-                        "border: 1px solid #777;"
-                        "height: 10px;"
-                        "border-radius: 4px;"
-                        "}"
-
-                        "QSlider::handle:horizontal {"
-                        "background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
-                            "stop:0 #eee, stop:1 #ccc);"
-                        "border: 1px solid #777;"
-                        "width: 13px;"
-                        "margin-top: -2px;"
-                        "margin-bottom: -2px;"
-                        "border-radius: 4px;"
-                        "}"
-
-                        "QSlider::handle:horizontal:hover {"
-                        "background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
-                            "stop:0 #fff, stop:1 #ddd);"
-                        "border: 1px solid #444;"
-                        "border-radius: 4px;"
-                        "}"
-
-                        "QSlider::sub-page:horizontal:disabled {"
-                        "background: #bbb;"
-                        "border-color: #999;"
-                        "}"
-
-                        "QSlider::add-page:horizontal:disabled {"
-                        "background: #eee;"
-                        "border-color: #999;"
-                        "}"
-
-                        "QSlider::handle:horizontal:disabled {"
-                        "background: #eee;"
-                        "border: 1px solid #aaa;"
-                        "border-radius: 4px;"
-                        "}"
-
-                        );
-                        */
 
 
+
+
+
+}
+
+void MainWindow::enableDropShadows(bool enabled)
+{
+
+    ui->treeView->graphicsEffect()->setEnabled(enabled);
+
+    ui->pushButtonAdd->graphicsEffect()->setEnabled(enabled);
+
+    ui->pushButtonDelete->graphicsEffect()->setEnabled(enabled);
+
+    ui->addArtButton->graphicsEffect()->setEnabled(enabled);
+
+    ui->linkMusicButton->graphicsEffect()->setEnabled(enabled);
+
+    ui->pushButtonSearch->graphicsEffect()->setEnabled(enabled);
+
+    ui->albumCoverLabel->graphicsEffect()->setEnabled(enabled);
+
+    ui->lineEditSearch->graphicsEffect()->setEnabled(enabled);
+
+    ui->trackSlider->graphicsEffect()->setEnabled(enabled);
+
+    ui->volumeSlider->graphicsEffect()->setEnabled(enabled);
+
+    ui->pausePlayButton->graphicsEffect()->setEnabled(enabled);
+
+    ui->forwardButton->graphicsEffect()->setEnabled(enabled);
+
+    ui->backButton->graphicsEffect()->setEnabled(enabled);
+
+    ui->songInfoFrame->graphicsEffect()->setEnabled(enabled);
+
+}
+
+void MainWindow::changeStyleSheet(QString styleSheet)
+{
+
+    QString fileName = styleSheet;
+    //Read stylesheet file
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
+    QTextStream in(&file);
+    QString text;
+    text = in.readAll();
+    file.close();
+
+    this->setStyleSheet(text);
+
+}
+
+void MainWindow::updateCurrentSongInfoDisplay()
+{
+    QString title = songItemModel->item(ui->treeView->currentIndex().row(),0)->text();
+    QString artist = songItemModel->item(ui->treeView->currentIndex().row(),1)->text();
+    QString album = songItemModel->item(ui->treeView->currentIndex().row(),2)->text();
+
+    ui->titleLabel->setText(title);
+    ui->artistLabel->setText(artist);
+    ui->albumLabel->setText(album);
 
 
 }
@@ -855,13 +830,16 @@ void MainWindow::slot_selectionChanged()
 
     qDebug() << "selection changed";
 
+    //Get selected album
     QString currentAlbum = songItemModel->item(ui->treeView->currentIndex().row(),2)->text();
     qDebug() << currentAlbum;
 
+    //turn album name into simple string, all lowecase with no numbers (this is the filename of the artwork)
     QString plainAlbum = currentAlbum.toLower().remove(QRegExp(QString::fromUtf8("[^a-zA-Z0-9]")));
 
     qDebug() << plainAlbum;
 
+    //Find file
     QDir dir(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\" + currentUser);
 
     QStringList filter, fileList;
@@ -884,10 +862,12 @@ void MainWindow::slot_selectionChanged()
 
     QPixmap pic(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\" + currentUser + "\\" + fileNameWExt);
 
+    //If picture doesnt exist use default image
     if (pic.isNull())
     {
-    pic.load(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
+        pic.load(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
     }
+
 
     ui->albumCoverLabel->setPixmap(pic.scaled(300,300,Qt::KeepAspectRatio,Qt::SmoothTransformation));
 
@@ -1136,6 +1116,8 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
         ui->pausePlayButton->setChecked(true);
         //on_pausePlayButton_clicked(true);
 
+        updateCurrentSongInfoDisplay();
+
     }
     else
     {
@@ -1246,6 +1228,51 @@ void MainWindow::on_backButton_clicked()
 
 
 
+//Menu triggers
+void MainWindow::on_actionPreferences_triggered()
+{
+    PrefsDialog* prefsWin = new PrefsDialog(this);
+
+    if (prefsWin->exec() == QDialog::Accepted){
+        qDebug() << "ACCEPT";
+        changeStyleSheet(prefsWin->stylePath);
+        enableDropShadows(prefsWin->dropShadowsEnabled);
+
+    }
+    //delete prefsWin;
+}
+
+void MainWindow::on_actionFind_album_art_triggered()
+{
+    //Get selected album
+    if (!ui->treeView->currentIndex().isValid()){
+        QMessageBox::critical(this, tr("Error"), tr("No Song Selected"));
+        return;
+    }
+
+
+    QString currentAlbum = songItemModel->item(ui->treeView->currentIndex().row(),2)->text();
 
 
 
+
+    AddArtworkDialog* artWin = new AddArtworkDialog(this);
+    artWin->setAlbumQuery(currentAlbum);
+    if (artWin->exec() == QDialog::Accepted){
+        qDebug() << "ACCEPT";
+        QPixmap img = artWin->selectedImg;
+
+        //Store the image
+        QString plainAlbum = currentAlbum.toLower().remove(QRegExp(QString::fromUtf8("[^a-zA-Z0-9]")));
+
+
+        //Need to check to overwrite
+        if (true){
+            QFile file(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\" + currentUser + "\\" + plainAlbum + "." + "png");
+            file.open(QIODevice::WriteOnly);
+            img.save(&file, "PNG");
+        }
+    }
+
+
+}

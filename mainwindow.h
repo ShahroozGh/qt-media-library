@@ -29,6 +29,9 @@
 #include <QGraphicsDropShadowEffect>
 
 
+#include "prefsdialog.h"
+
+#include "addartworkdialog.h"
 
 #include "AudioSystem.h"
 
@@ -45,6 +48,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    void changeStyleSheet(QString styleSheet);
 
 protected:
     //Overrided functions
@@ -106,6 +111,10 @@ private slots:
 
     void on_volumeSlider_actionTriggered(int action);
 
+    void on_actionPreferences_triggered();
+
+    void on_actionFind_album_art_triggered();
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *songItemModel;          //Data struct that holds song list data for display
@@ -125,6 +134,10 @@ private:
     void changesSaved();
 
     void setStyleSheets();
+    void enableDropShadows(bool enabled);
+
+
+    void updateCurrentSongInfoDisplay();
 
 
 };

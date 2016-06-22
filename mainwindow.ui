@@ -117,7 +117,7 @@
          <item>
           <widget class="QLabel" name="titleLabel">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -148,7 +148,7 @@
          <item>
           <widget class="QLabel" name="artistLabel">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -164,7 +164,7 @@
          <item>
           <widget class="QLabel" name="albumLabel">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -178,8 +178,6 @@
           </widget>
          </item>
         </layout>
-        <zorder>albumLabel</zorder>
-        <zorder>verticalLayoutWidget</zorder>
         <zorder>albumLabel</zorder>
         <zorder>artistLabel</zorder>
         <zorder>titleLabel</zorder>
@@ -319,6 +317,9 @@
           <property name="maximum">
            <number>9999999</number>
           </property>
+          <property name="pageStep">
+           <number>1000000</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -413,6 +414,7 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionFind_album_art"/>
     <addaction name="actionPreferences"/>
    </widget>
    <addaction name="menuFile"/>
@@ -449,6 +451,11 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences...</string>
+   </property>
+  </action>
+  <action name="actionFind_album_art">
+   <property name="text">
+    <string>Find album art...</string>
    </property>
   </action>
  </widget>

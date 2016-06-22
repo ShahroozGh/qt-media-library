@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT         += multimedia
+QT += network
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -17,14 +18,20 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     AudioSystem.cpp \
-    SpectrumVisualizer.cpp
+    SpectrumVisualizer.cpp \
+    prefsdialog.cpp \
+    addartworkdialog.cpp
 
 HEADERS  += mainwindow.h \
     AudioSystem.h \
-    SpectrumVisualizer.h
+    SpectrumVisualizer.h \
+    prefsdialog.h \
+    addartworkdialog.h
 
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    prefsdialog.ui \
+    addartworkdialog.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/'../../../../Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/lib/' -lfmod_vc
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/'../../../../Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/lib/' -lfmod_vcd
