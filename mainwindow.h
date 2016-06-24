@@ -28,6 +28,7 @@
 
 #include <QGraphicsDropShadowEffect>
 
+#include "QCategoryFilterProxyModel.h"
 
 #include "prefsdialog.h"
 
@@ -134,6 +135,7 @@ private:
     void changesSaved();
 
     void setStyleSheets();
+    void setDropShadowProperties(int blurRadius, QColor color);
     void enableDropShadows(bool enabled);
 
 

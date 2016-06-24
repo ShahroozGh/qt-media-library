@@ -20,13 +20,15 @@ SOURCES += main.cpp\
     AudioSystem.cpp \
     SpectrumVisualizer.cpp \
     prefsdialog.cpp \
-    addartworkdialog.cpp
+    addartworkdialog.cpp \
+    QCategoryFilterProxyModel.cpp
 
 HEADERS  += mainwindow.h \
     AudioSystem.h \
     SpectrumVisualizer.h \
     prefsdialog.h \
-    addartworkdialog.h
+    addartworkdialog.h \
+    QCategoryFilterProxyModel.h
 
 
 FORMS    += mainwindow.ui \
@@ -40,4 +42,5 @@ INCLUDEPATH += $$PWD/'../../../../Program Files (x86)/FMOD SoundSystem/FMOD Stud
 DEPENDPATH += $$PWD/'../../../../Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/inc'
 
 DISTFILES += \
-    mainWindowStyleSheet.css
+    mainWindowStyleSheet.css \
+    ../songPro/themes/lightTheme.css

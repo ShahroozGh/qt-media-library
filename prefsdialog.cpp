@@ -28,5 +28,6 @@ void PrefsDialog::on_buttonBox_accepted()
 {
     stylePath = ui->styleSheetPathLineEdit->text();
     dropShadowsEnabled = ui->dropShadowCheckBox->isChecked();
+    blurRadius = ui->blurRadiusSpinBox->value();
 
 }

@@ -254,6 +254,7 @@ void MainWindow::setStyleSheets()
     ds->setOffset(0,0);
     ds->setColor(Qt::black);
 
+
     ui->songInfoFrame->setGraphicsEffect(ds);
 
 
@@ -265,6 +266,113 @@ void MainWindow::setStyleSheets()
 
 }
 
+//Sets a global drop Shadow properties
+void MainWindow::setDropShadowProperties(int blurRadius, QColor color)
+{
+    //Set Effects
+    QGraphicsDropShadowEffect* ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+    ui->treeView->setGraphicsEffect(ds);
+
+
+    QGraphicsDropShadowEffect* ds2 = new QGraphicsDropShadowEffect(this);
+    ds2->setBlurRadius(blurRadius);
+    ds2->setOffset(0,0);
+    ds2->setColor(color);
+
+    ui->pushButtonAdd->setGraphicsEffect(ds2);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->pushButtonDelete->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->addArtButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->linkMusicButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->pushButtonSearch->setGraphicsEffect(ds);
+
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->albumCoverLabel->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->lineEditSearch->setGraphicsEffect(ds);
+
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->trackSlider->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->volumeSlider->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->pausePlayButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->forwardButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+    ui->backButton->setGraphicsEffect(ds);
+
+    ds = new QGraphicsDropShadowEffect(this);
+    ds->setBlurRadius(blurRadius);
+    ds->setOffset(0,0);
+    ds->setColor(color);
+
+
+    ui->songInfoFrame->setGraphicsEffect(ds);
+}
+
+//Toggles dropShadows
 void MainWindow::enableDropShadows(bool enabled)
 {
 
@@ -490,6 +598,7 @@ void MainWindow::on_pushButtonDelete_clicked()
 
     //Temp test to dump tag info
     //Get path
+    /*
     QString path = songItemModel->item(ui->treeView->currentIndex().row(),4)->text();
     QFile listFile(path);
 
@@ -507,6 +616,10 @@ void MainWindow::on_pushButtonDelete_clicked()
 
 
     }
+    */
+
+    //Temp comment out above, put back clater
+    ui->treeView->setModel(songItemModel);
 
 }
 //-----------------------------------------------------------
@@ -514,7 +627,7 @@ void MainWindow::on_pushButtonSearch_clicked()
 {
 
     qDebug() << "search clicked";
-    ui->lineEditSearch->clear();
+    //ui->lineEditSearch->clear();
 
     //temp
     /*
@@ -525,15 +638,21 @@ void MainWindow::on_pushButtonSearch_clicked()
     */
     //end-temp
 
-    QString test = "he'l;lo my name is 'b.//'ob";
+    QCategoryFilterProxyModel* albumProxyModel = new QCategoryFilterProxyModel(this);
+    albumProxyModel->setSourceModel(songItemModel);
+    albumProxyModel->setFilterKeyColumn(2);
 
-    qDebug() << test.remove(QRegExp(QString::fromUtf8("[ -`~!@#$%^&*()_—+=|:;<>«»,.?/{}\'\"\\\[\\\]\\\\]")));
+    ui->treeView->setModel(albumProxyModel);
+
+
 
 }
 //-----------------------------------------------------------
+//Delete, sort button doesnt exist anymore
 void MainWindow::on_pushButtonSort_clicked()
 {
     ui->treeView->setModel(songItemModel);
+
 }
 //-----------------------------------------------------------
 //Triggered when search query text changes
@@ -1237,6 +1356,7 @@ void MainWindow::on_actionPreferences_triggered()
         qDebug() << "ACCEPT";
         changeStyleSheet(prefsWin->stylePath);
         enableDropShadows(prefsWin->dropShadowsEnabled);
+        setDropShadowProperties(prefsWin->blurRadius, Qt::black);
 
     }
     //delete prefsWin;

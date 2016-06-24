@@ -33,6 +33,40 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
+    <item row="3" column="4">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item alignment="Qt::AlignTop">
+       <widget class="QPushButton" name="pushButtonDelete">
+        <property name="text">
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignTop">
+       <widget class="QPushButton" name="pushButtonAdd">
+        <property name="text">
+         <string>Add</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="4">
+     <widget class="QPushButton" name="pushButtonSearch">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Clear</string>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="2" column="0">
@@ -185,6 +219,19 @@
       </item>
      </layout>
     </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="2" column="1" colspan="4">
      <widget class="QTreeView" name="treeView">
       <property name="sizePolicy">
@@ -215,19 +262,6 @@
        <bool>false</bool>
       </property>
      </widget>
-    </item>
-    <item row="1" column="2">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
     </item>
     <item row="1" column="3">
      <widget class="QLineEdit" name="lineEditSearch"/>
@@ -355,40 +389,6 @@
        </layout>
       </item>
      </layout>
-    </item>
-    <item row="3" column="4">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item alignment="Qt::AlignTop">
-       <widget class="QPushButton" name="pushButtonDelete">
-        <property name="text">
-         <string>Delete</string>
-        </property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignTop">
-       <widget class="QPushButton" name="pushButtonAdd">
-        <property name="text">
-         <string>Add</string>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="4">
-     <widget class="QPushButton" name="pushButtonSearch">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Clear</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>

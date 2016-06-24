@@ -300,6 +300,49 @@ QHeaderView::section:checked
     background-color: red;
 }
 
+/*-----------------------SCROLL BARS-----------------------*/
+QScrollBar:vertical {
+    border: 0px solid grey;
+    background: #45403c;
+    width: 10px;
+    margin: 22px 0 22px 0;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical {
+    background: white;
+    min-height: 20px;
+    border-radius: 5px;
+}
+QScrollBar::add-line:vertical {
+    border: 2px none red;
+    background: #9b7351;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    height: 20px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+    border: 2px none blue;
+    background: #45403c;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    height: 20px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    border: 0px solid yellow;
+    width: 3px;
+    height: 3px;
+    border-radius: 2px;
+    background: white;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
 
 /* ----------------------TEXT FIELDS------------------------- */
 QLineEdit {
