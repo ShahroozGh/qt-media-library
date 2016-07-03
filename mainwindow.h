@@ -26,7 +26,11 @@
 
 #include <QTimer>
 
+#include <QButtonGroup>
+
 #include <QGraphicsDropShadowEffect>
+
+#include "QCardStyledItemDelegate.h"
 
 #include "QCategoryFilterProxyModel.h"
 
@@ -116,13 +120,24 @@ private slots:
 
     void on_actionFind_album_art_triggered();
 
+    void on_pushButtonPg1_clicked();
+
+    void on_pushButtonPg2_clicked();
+
+    void on_albumListView_doubleClicked(const QModelIndex &index);
+
+    void cat_button_group_clicked(int id);
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *songItemModel;          //Data struct that holds song list data for display
+
     QString currentUser, currentSongPath;
     QMediaPlayer *player;
     QTimer *updateTimer;
     bool unsavedChanges, isLoading;
+    QButtonGroup* categorySelectorGroup;
+
     //Audio System
     AudioSystem fmodSys;
 

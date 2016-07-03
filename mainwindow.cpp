@@ -15,6 +15,17 @@ MainWindow::MainWindow(QWidget *parent) :
     //this->setStyleSheet("background-color: grey;");
     //this->setPalette( QPalette(QColor(55,55,55)) );
 
+    //Set up button group
+    categorySelectorGroup = new QButtonGroup(this);
+    categorySelectorGroup->addButton(ui->displaySongsButton);
+    categorySelectorGroup->addButton(ui->displayAlbumsButton);
+    categorySelectorGroup->addButton(ui->displayArtistsButton);
+
+    categorySelectorGroup->setId(ui->displaySongsButton, 0);
+    categorySelectorGroup->setId(ui->displayAlbumsButton, 1);
+    categorySelectorGroup->setId(ui->displayArtistsButton, 2);
+
+    QObject::connect(categorySelectorGroup, SIGNAL(buttonClicked(int)), SLOT(cat_button_group_clicked(int)));
 
     ui->pausePlayButton->setCheckable(true);
 
@@ -77,6 +88,9 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->graphicsView->setAlignment(Qt::AlignBottom|Qt::AlignLeft);
    ui->graphicsView->lower();
 
+
+   //Set item delegates
+    ui->albumListView->setItemDelegate(new QCardStyledItemDelegate(this));
 
    //Set up signal/slot to detect when selection changes
    QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
@@ -989,7 +1003,7 @@ void MainWindow::slot_selectionChanged()
 
 
     ui->albumCoverLabel->setPixmap(pic.scaled(300,300,Qt::KeepAspectRatio,Qt::SmoothTransformation));
-
+    songItemModel->item(ui->treeView->currentIndex().row(),2)->setIcon(QIcon(pic));
 }
 
 //When add artwork button is clicked this will be triggered
@@ -1395,4 +1409,79 @@ void MainWindow::on_actionFind_album_art_triggered()
     }
 
 
+}
+
+void MainWindow::on_pushButtonPg1_clicked()
+{
+    ui->songListsStackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_pushButtonPg2_clicked()
+{
+    ui->songListsStackedWidget->setCurrentIndex(1);
+    QCategoryFilterProxyModel* albumProxyModel = new QCategoryFilterProxyModel(this);
+    albumProxyModel->setSourceModel(songItemModel);
+    albumProxyModel->setFilterKeyColumn(2);
+
+    ui->albumListView->setModel(albumProxyModel);
+}
+
+//If icon view list is double clicked
+void MainWindow::on_albumListView_doubleClicked(const QModelIndex &index)
+{
+    //Change view to an album
+    QString album = index.data(Qt::DisplayRole).toString();
+
+    //Set a filter proxy model to display items from chosen album
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(songItemModel);
+
+    //Filter by album name
+    proxyModel->setFilterRegExp(QRegExp(album,Qt::CaseSensitive,QRegExp::FixedString));
+    proxyModel->setFilterKeyColumn(2);
+
+    ui->treeView->setModel(proxyModel);
+
+    //Change label
+    ui->ListTypeLabel->setText(album);
+
+    //Switch page
+    ui->songListsStackedWidget->setCurrentIndex(0);
+
+
+}
+
+void MainWindow::cat_button_group_clicked(int id)
+{
+    qDebug() << "ID: " << id;
+    QList<QAbstractButton*> buttons = categorySelectorGroup->buttons();
+
+    for (int i = 0; i < buttons.size(); i++){
+
+        if (buttons[i]->isChecked()){
+            buttons[i]->setText("Checked");
+
+        }
+        else{
+            buttons[i]->setText("NChecked");
+        }
+    }
+
+    //If trakc button clicked
+    if (id == 0){
+        //Switch to regular treeview and change its model to display all tracks
+        ui->songListsStackedWidget->setCurrentIndex(0);
+        ui->treeView->setModel(songItemModel);
+        ui->ListTypeLabel->setText("All Tracks");
+    }
+    else if(id == 1){
+        ui->songListsStackedWidget->setCurrentIndex(1);
+        //Maybe make this global
+        QCategoryFilterProxyModel* albumProxyModel = new QCategoryFilterProxyModel(this);
+        albumProxyModel->setSourceModel(songItemModel);
+        albumProxyModel->setFilterKeyColumn(2);
+
+        ui->albumListView->setModel(albumProxyModel);
+
+    }
 }

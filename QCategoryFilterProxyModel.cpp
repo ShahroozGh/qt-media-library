@@ -9,13 +9,27 @@ QCategoryFilterProxyModel::QCategoryFilterProxyModel(QObject *parent): QSortFilt
 {
 }
 
+QVariant QCategoryFilterProxyModel::data(const QModelIndex &idx, int role) const
+{
+    //Artist role
+    if(role == Qt::UserRole + 1){
+        //get artist index from source model
+        QModelIndex artistIndex = sourceModel()->index(mapToSource(idx).row(), 1); //Wrong index, this is filtered index
+        //return artist name
+        return artistIndex.data().toString();
+    }
+    else{
+        //Else return default values for other roles
+        return QSortFilterProxyModel::data(idx, role);
+    }
+}
+
 bool QCategoryFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     QModelIndex index = sourceModel()->index(sourceRow, filterKeyColumn(), sourceParent);
     //qDebug() << "QFILTER: " << filterKeyColumn() << " " << index.data().toString();
     if(!(uniqueCategories.contains(index.data().toString())))
     {
-
         const_cast<QCategoryFilterProxyModel *>(this)->uniqueCategories.insert(index.data().toString());
         return true;
     }
@@ -29,6 +43,7 @@ bool QCategoryFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelInde
 
 bool QCategoryFilterProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const
 {
+    //Change this for variable column choice
     if (sourceColumn != 2)
         return false;
     else

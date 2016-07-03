@@ -21,14 +21,16 @@ SOURCES += main.cpp\
     SpectrumVisualizer.cpp \
     prefsdialog.cpp \
     addartworkdialog.cpp \
-    QCategoryFilterProxyModel.cpp
+    QCategoryFilterProxyModel.cpp \
+    QCardStyledItemDelegate.cpp
 
 HEADERS  += mainwindow.h \
     AudioSystem.h \
     SpectrumVisualizer.h \
     prefsdialog.h \
     addartworkdialog.h \
-    QCategoryFilterProxyModel.h
+    QCategoryFilterProxyModel.h \
+    QCardStyledItemDelegate.h
 
 
 FORMS    += mainwindow.ui \

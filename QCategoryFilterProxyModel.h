@@ -14,6 +14,7 @@ public:
     QCategoryFilterProxyModel(QObject *parent);
 
 protected:
+    QVariant data(const QModelIndex& idx, int role) const;
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
     bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
     void invalidateFilter();

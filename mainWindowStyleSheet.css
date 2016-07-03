@@ -24,6 +24,27 @@ QMenuBar::item:pressed {
 }
 
 /* ----------------------LABELS------------------------- */
+
+QLabel#IconListTypeLabel {
+    background-color: transparent;
+    color: white;
+    font-family: "Roboto Lt";
+    font-weight: bold;
+    font-size: 40px;
+    margin: 0px;
+    padding: 0px;
+}
+
+QLabel#ListTypeLabel {
+    background-color: transparent;
+    color: white;
+    font-family: "Roboto Lt";
+    font-weight: bold;
+    font-size: 40px;
+    margin: 0px;
+    padding: 0px;
+}
+
 QLabel#timeLabel {
     color: white;
     font-family: "Roboto Lt";
@@ -298,6 +319,34 @@ QHeaderView::section:last {
 QHeaderView::section:checked
 {
     background-color: red;
+}
+
+/*-----*/
+
+QListView {
+    background-color: #757581;
+    /*selection-color: #f7941d;*/
+    /*selection-background-color: #f7941d;*/
+    font-family: "Roboto";
+    font-weight: normal;
+    color: white;
+
+    border: 0px;
+    border-radius: 3px;
+
+}
+
+QListView::item {
+    background-color: #45403c;
+    margin: 5px 5px 5px 5px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+    color: white;
+    font-family: "Roboto Lt";
+    /*font-weight: bold;*/
+
+
 }
 
 /*-----------------------SCROLL BARS-----------------------*/
