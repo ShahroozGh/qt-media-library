@@ -44,7 +44,7 @@ bool QCategoryFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelInde
 bool QCategoryFilterProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const
 {
     //Change this for variable column choice
-    if (sourceColumn != 2)
+    if (sourceColumn != filterKeyColumn())
         return false;
     else
         return true;

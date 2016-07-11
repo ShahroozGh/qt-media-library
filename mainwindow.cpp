@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //this->setStyleSheet("background-color: grey;");
     //this->setPalette( QPalette(QColor(55,55,55)) );
 
+
     //Set up button group
     categorySelectorGroup = new QButtonGroup(this);
     categorySelectorGroup->addButton(ui->displaySongsButton);
@@ -28,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(categorySelectorGroup, SIGNAL(buttonClicked(int)), SLOT(cat_button_group_clicked(int)));
 
     ui->pausePlayButton->setCheckable(true);
+
+
+    //Set up menu bar and add to layout
+    ((QGridLayout*)ui->centralWidget->layout())->addWidget(createMenuBar(), 0, 1, 1, 4);
 
     //songPro folder under users documents folder
     QIcon forward(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\forwardIcon.png");
@@ -191,19 +196,7 @@ void MainWindow::setStyleSheets()
 
     ui->pushButtonDelete->setGraphicsEffect(ds);
 
-    ds = new QGraphicsDropShadowEffect(this);
-    ds->setBlurRadius(20);
-    ds->setOffset(0,0);
-    ds->setColor(Qt::black);
 
-    ui->addArtButton->setGraphicsEffect(ds);
-
-    ds = new QGraphicsDropShadowEffect(this);
-    ds->setBlurRadius(20);
-    ds->setOffset(0,0);
-    ds->setColor(Qt::black);
-
-    ui->linkMusicButton->setGraphicsEffect(ds);
 
     ds = new QGraphicsDropShadowEffect(this);
     ds->setBlurRadius(20);
@@ -305,19 +298,7 @@ void MainWindow::setDropShadowProperties(int blurRadius, QColor color)
 
     ui->pushButtonDelete->setGraphicsEffect(ds);
 
-    ds = new QGraphicsDropShadowEffect(this);
-    ds->setBlurRadius(blurRadius);
-    ds->setOffset(0,0);
-    ds->setColor(color);
 
-    ui->addArtButton->setGraphicsEffect(ds);
-
-    ds = new QGraphicsDropShadowEffect(this);
-    ds->setBlurRadius(blurRadius);
-    ds->setOffset(0,0);
-    ds->setColor(color);
-
-    ui->linkMusicButton->setGraphicsEffect(ds);
 
     ds = new QGraphicsDropShadowEffect(this);
     ds->setBlurRadius(blurRadius);
@@ -395,10 +376,6 @@ void MainWindow::enableDropShadows(bool enabled)
     ui->pushButtonAdd->graphicsEffect()->setEnabled(enabled);
 
     ui->pushButtonDelete->graphicsEffect()->setEnabled(enabled);
-
-    ui->addArtButton->graphicsEffect()->setEnabled(enabled);
-
-    ui->linkMusicButton->graphicsEffect()->setEnabled(enabled);
 
     ui->pushButtonSearch->graphicsEffect()->setEnabled(enabled);
 
@@ -643,21 +620,10 @@ void MainWindow::on_pushButtonSearch_clicked()
     qDebug() << "search clicked";
     //ui->lineEditSearch->clear();
 
-    //temp
-    /*
     ui->treeView->setModel(songItemModel);
     qDebug() << "Unselected";
     ui->lineEditSearch->clear();
     QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
-    */
-    //end-temp
-
-    QCategoryFilterProxyModel* albumProxyModel = new QCategoryFilterProxyModel(this);
-    albumProxyModel->setSourceModel(songItemModel);
-    albumProxyModel->setFilterKeyColumn(2);
-
-    ui->treeView->setModel(albumProxyModel);
-
 
 
 }
@@ -1002,10 +968,11 @@ void MainWindow::slot_selectionChanged()
     }
 
 
-    ui->albumCoverLabel->setPixmap(pic.scaled(300,300,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+    ui->albumCoverLabel->setPixmap(pic.scaled(200,200,Qt::KeepAspectRatio,Qt::SmoothTransformation));
     songItemModel->item(ui->treeView->currentIndex().row(),2)->setIcon(QIcon(pic));
 }
 
+//REMOVE THIS
 //When add artwork button is clicked this will be triggered
 //Function allows user to select an image file to use for this album
 void MainWindow::on_addArtButton_clicked()
@@ -1024,6 +991,68 @@ void MainWindow::on_addArtButton_clicked()
     }
 }
 
+//When add artwork button is clicked this will be triggered
+//Function allows user to select an image file to use for this album
+void MainWindow::on_actionAdd_art_form_file_triggered()
+{
+    QString currentAlbum = songItemModel->item(ui->treeView->currentIndex().row(),2)->text();
+
+    QString plainAlbum = currentAlbum.toLower().remove(QRegExp(QString::fromUtf8("[^a-zA-Z0-9]")));
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QStandardPaths::standardLocations(QStandardPaths::PicturesLocation)[0],
+            tr("Image Files (*.png *.jpg *.jpeg)"));
+
+    //Need to check to overwrite
+    if (!fileName.isEmpty()){
+        QFile file(fileName);
+        file.copy(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\" + currentUser + "\\" + plainAlbum + "." + QFileInfo(fileName).suffix());
+    }
+}
+
+QMenuBar *MainWindow::createMenuBar()
+{
+
+    //Create menubar
+    QMenuBar* menuBar = new QMenuBar(this);
+    menuBar->setObjectName("menuBar");
+    menuBar->setGeometry(QRect(0,0,window()->width(),20));
+    //menuBar->setNativeMenuBar(false);
+
+    //Set up actions
+    QAction* testAction = new QAction(this);
+    testAction->setObjectName("test");
+    testAction->setText("test");
+
+    //Set up menus
+    QMenu* fileMenu = new QMenu(menuBar);
+    fileMenu->setTitle("File");
+
+    QMenu* editMenu = new QMenu(menuBar);
+    editMenu->setTitle("Edit");
+
+    //Add actions to menuBar
+    menuBar->addAction(fileMenu->menuAction());
+    menuBar->addAction(editMenu->menuAction());
+
+    //Add fileMenu actions
+    fileMenu->addAction("New", this, SLOT(on_actionNew_triggered()));
+    fileMenu->addAction("Open", this, SLOT(on_actionOpen_triggered()));
+    fileMenu->addAction("Save", this, SLOT(on_actionSave_triggered()));
+    fileMenu->addAction("Save as", this, SLOT(on_actionSave_as_triggered()));
+
+    //Add Edit actions
+    editMenu->addAction("Find Album Art...", this, SLOT(on_actionFind_album_art_triggered()));
+    editMenu->addAction("Add art from file...", this, SLOT(on_actionAdd_art_form_file_triggered()));
+    editMenu->addAction("Link Music file...", this, SLOT(on_actionLink_Music_File_triggered()));
+    editMenu->addAction("Preferences...", this, SLOT(on_actionPreferences_triggered()));
+
+    return menuBar;
+
+
+}
+
+
+//REMOVE THIS
 //Allows user to add an mp3 file for the currently selected song
 void MainWindow::on_linkMusicButton_clicked()
 {
@@ -1040,6 +1069,21 @@ void MainWindow::on_linkMusicButton_clicked()
 
 
 
+}
+
+//Add mp3 file to track (from drop down)
+void MainWindow::on_actionLink_Music_File_triggered()
+{
+    int currentRow = ui->treeView->currentIndex().row();
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QStandardPaths::standardLocations(QStandardPaths::MusicLocation)[0],
+            tr("Music Files (*.mp3)"));
+
+    songItemModel->setItem(currentRow, 4, new QStandardItem(fileName));
+
+    //not grey
+    //need to save bool (disp star)/ usaved changes made func changeMade()
+    changesMade();
 }
 
 bool MainWindow::validateSongList(QString fileName)
@@ -1429,8 +1473,14 @@ void MainWindow::on_pushButtonPg2_clicked()
 //If icon view list is double clicked
 void MainWindow::on_albumListView_doubleClicked(const QModelIndex &index)
 {
-    //Change view to an album
-    QString album = index.data(Qt::DisplayRole).toString();
+    //Need to Check whether an artist or album was clicked
+    int column = ((QCategoryFilterProxyModel*)ui->albumListView->model())->filterKeyColumn();
+    //Change view to an album or artist
+    QString album;
+    if (column == 2)
+        album = index.data(Qt::DisplayRole).toString();
+    else if (column == 1)
+        album = index.data(Qt::UserRole + 1).toString();
 
     //Set a filter proxy model to display items from chosen album
     QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
@@ -1438,12 +1488,15 @@ void MainWindow::on_albumListView_doubleClicked(const QModelIndex &index)
 
     //Filter by album name
     proxyModel->setFilterRegExp(QRegExp(album,Qt::CaseSensitive,QRegExp::FixedString));
-    proxyModel->setFilterKeyColumn(2);
+    proxyModel->setFilterKeyColumn(column);
 
     ui->treeView->setModel(proxyModel);
 
+    //Reconnect selection signal/slot
+    //QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
+
     //Change label
-    ui->ListTypeLabel->setText(album);
+    ui->IconListTypeLabel->setText(album);
 
     //Switch page
     ui->songListsStackedWidget->setCurrentIndex(0);
@@ -1456,23 +1509,16 @@ void MainWindow::cat_button_group_clicked(int id)
     qDebug() << "ID: " << id;
     QList<QAbstractButton*> buttons = categorySelectorGroup->buttons();
 
-    for (int i = 0; i < buttons.size(); i++){
-
-        if (buttons[i]->isChecked()){
-            buttons[i]->setText("Checked");
-
-        }
-        else{
-            buttons[i]->setText("NChecked");
-        }
-    }
 
     //If trakc button clicked
     if (id == 0){
         //Switch to regular treeview and change its model to display all tracks
         ui->songListsStackedWidget->setCurrentIndex(0);
         ui->treeView->setModel(songItemModel);
-        ui->ListTypeLabel->setText("All Tracks");
+        ui->IconListTypeLabel->setText("All Tracks");
+
+        //Reconnect selection changed signal/slot now that model is changed
+        QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
     }
     else if(id == 1){
         ui->songListsStackedWidget->setCurrentIndex(1);
@@ -1481,7 +1527,25 @@ void MainWindow::cat_button_group_clicked(int id)
         albumProxyModel->setSourceModel(songItemModel);
         albumProxyModel->setFilterKeyColumn(2);
 
+
         ui->albumListView->setModel(albumProxyModel);
+
+        ui->IconListTypeLabel->setText("Albums");
+    }
+    else if(id == 2){
+        ui->songListsStackedWidget->setCurrentIndex(1);
+        //Maybe make this global
+        QCategoryFilterProxyModel* albumProxyModel = new QCategoryFilterProxyModel(this);
+        albumProxyModel->setSourceModel(songItemModel);
+        albumProxyModel->setFilterKeyColumn(1);
+
+        ui->albumListView->setModel(albumProxyModel);
+
+        ui->IconListTypeLabel->setText("Artists");
 
     }
 }
+
+
+
+

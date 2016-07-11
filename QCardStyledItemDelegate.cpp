@@ -21,7 +21,7 @@ void QCardStyledItemDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     //Paint Background
     //QBrush bg = option.palette.background();
-    QBrush bg(QColor("#45403c"));
+    QBrush bg(QColor("#212121"));
     pen.setColor(QColor("#262321"));
 
     painter->setBrush(bg);
@@ -39,7 +39,7 @@ void QCardStyledItemDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     //Paint text
     QSize infoBoxSize = option.rect.size() - option.decorationSize;
 
-    pen.setColor(option.palette.foreground().color());
+    pen.setColor(QColor("#f6f6f6"));
     painter->setPen(pen);
     //Font properties
     //QFont primFont = option.font;

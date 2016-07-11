@@ -128,6 +128,10 @@ private slots:
 
     void cat_button_group_clicked(int id);
 
+    void on_actionLink_Music_File_triggered();
+
+    void on_actionAdd_art_form_file_triggered();
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *songItemModel;          //Data struct that holds song list data for display
@@ -137,6 +141,8 @@ private:
     QTimer *updateTimer;
     bool unsavedChanges, isLoading;
     QButtonGroup* categorySelectorGroup;
+
+    QMenuBar* createMenuBar();
 
     //Audio System
     AudioSystem fmodSys;
@@ -155,6 +161,8 @@ private:
 
 
     void updateCurrentSongInfoDisplay();
+
+
 
 
 };
