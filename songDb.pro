@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     prefsdialog.cpp \
     addartworkdialog.cpp \
     QCategoryFilterProxyModel.cpp \
-    QCardStyledItemDelegate.cpp
+    QCardStyledItemDelegate.cpp \
+    customtitlebar.cpp \
+    customcentralwidget.cpp
 
 HEADERS  += mainwindow.h \
     AudioSystem.h \
@@ -30,7 +32,9 @@ HEADERS  += mainwindow.h \
     prefsdialog.h \
     addartworkdialog.h \
     QCategoryFilterProxyModel.h \
-    QCardStyledItemDelegate.h
+    QCardStyledItemDelegate.h \
+    customtitlebar.h \
+    customcentralwidget.h
 
 
 FORMS    += mainwindow.ui \

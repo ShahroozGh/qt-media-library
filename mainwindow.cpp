@@ -10,11 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     unsavedChanges = true;
     this->setWindowTitle("Untitled*");
-    //this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint );
+    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint );
 
     //this->setStyleSheet("background-color: grey;");
     //this->setPalette( QPalette(QColor(55,55,55)) );
-
 
     //Set up button group
     categorySelectorGroup = new QButtonGroup(this);
@@ -32,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //Set up menu bar and add to layout
-    ((QGridLayout*)ui->centralWidget->layout())->addWidget(createMenuBar(), 0, 1, 1, 4);
+    ((QGridLayout*)ui->centralWidget->layout())->addWidget(createMenuBar(), 4, 1, 1, 4);
 
     //songPro folder under users documents folder
     QIcon forward(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\resources\\forwardIcon.png");
@@ -1549,3 +1548,22 @@ void MainWindow::cat_button_group_clicked(int id)
 
 
 
+//For custom close buttons
+
+void MainWindow::on_closeB_clicked()
+{
+    qApp->quit();
+}
+
+void MainWindow::on_minMaxB_clicked()
+{
+    if (window()->isMaximized())
+        window()->showNormal();
+    else
+        window()->showMaximized();
+}
+
+void MainWindow::on_minimizeB_clicked()
+{
+    window()->showMinimized();
+}

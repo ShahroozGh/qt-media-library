@@ -18,6 +18,8 @@
 #include <QStandardPaths>
 #include <QFileInfo>
 
+#include <QMenuBar>
+
 #include <QPixmap>
 
 #include <QInputDialog>
@@ -131,6 +133,12 @@ private slots:
     void on_actionLink_Music_File_triggered();
 
     void on_actionAdd_art_form_file_triggered();
+
+    void on_closeB_clicked();
+
+    void on_minMaxB_clicked();
+
+    void on_minimizeB_clicked();
 
 private:
     Ui::MainWindow *ui;
