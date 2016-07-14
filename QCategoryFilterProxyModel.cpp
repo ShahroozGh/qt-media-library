@@ -14,9 +14,15 @@ QVariant QCategoryFilterProxyModel::data(const QModelIndex &idx, int role) const
     //Artist role
     if(role == Qt::UserRole + 1){
         //get artist index from source model
-        QModelIndex artistIndex = sourceModel()->index(mapToSource(idx).row(), 1); //Wrong index, this is filtered index
+        QModelIndex artistIndex = sourceModel()->index(mapToSource(idx).row(), 1);
         //return artist name
         return artistIndex.data().toString();
+    }
+    else if(role == Qt::DecorationRole){
+        //get art index from source model
+        QModelIndex artIndex = sourceModel()->index(mapToSource(idx).row(), 5);
+        //return icon from art column
+        return artIndex.data(Qt::DecorationRole);
     }
     else{
         //Else return default values for other roles

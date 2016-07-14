@@ -53,32 +53,24 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->volumeSlider->setMaximum(100);
 
-    //ui->lcdNumber->setPalette(Qt::black);
-
     //True if file is currently being read
     isLoading = false;
 
-    //Create new item model
+    //Create new item model that will store all tracks
     //songItemModel = new QStandardItemModel(3,4,this);
     songItemModel = new QStandardItemModel(0,0,this);
-/*
-    //Populate inital songs (temp)
-    for(int row = 0; row < 3; row++)
-    {
-        for(int col = 0; col < 4; col++)
-        {
-            QStandardItem *item = new QStandardItem(QString("row %0, column %1").arg(row).arg(col));
-            songItemModel->setItem(row, col, item);
-        }
-    }
-*/
+
+
     //set model for tree view and labels
     ui->treeView->setModel(songItemModel);
     ui->treeView->setSortingEnabled(true);
-    songItemModel->setHorizontalHeaderLabels(QStringList() << "Title" << "Artist" << "Album" << "Genre" << "Path");
+    songItemModel->setHorizontalHeaderLabels(QStringList() << "Title" << "Artist" << "Album" << "Genre" << "Path" << "Art");
+    ui->treeView->header()->moveSection(5,0);
+    ui->treeView->setIconSize(QSize(50,50));
 
+   //Set album picture to default
    QPixmap pic(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
-   ui->albumCoverLabel->setPixmap(pic.scaled(300,300,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+   ui->albumCoverLabel->setPixmap(pic.scaled(200,200,Qt::KeepAspectRatio,Qt::SmoothTransformation));
     //ui->treeView->editTriggers()
 
 
@@ -101,6 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
    QObject::connect(songItemModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(slot_itemChanged(QStandardItem*)));
 
    setStyleSheets();
+
    //Timer to signal update loop for fft
    updateTimer = new QTimer(this);
    connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateLoop()));
@@ -425,6 +418,22 @@ void MainWindow::updateCurrentSongInfoDisplay()
 
 }
 
+//Switches between using the custome native titlebar and the custom skinned one
+void MainWindow::useCustomFrame(bool use)
+{
+    if (use){
+        this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint );
+        ui->titleBarWidget->show();
+        this->show();
+    }
+    else{
+        this->setWindowFlags(Qt::Window);
+        ui->titleBarWidget->hide();
+        this->show();
+
+    }
+}
+
 //Drag and Drop events
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
@@ -624,6 +633,7 @@ void MainWindow::on_pushButtonSearch_clicked()
     ui->lineEditSearch->clear();
     QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
 
+    useCustomFrame(false);
 
 }
 //-----------------------------------------------------------
@@ -820,7 +830,8 @@ void MainWindow::on_actionOpen_triggered()
 
         //Clear current songItemModel and reset header
         songItemModel->clear();
-        songItemModel->setHorizontalHeaderLabels(QStringList() << "Title" << "Artist" << "Album" << "Genre" << "Path");
+        songItemModel->setHorizontalHeaderLabels(QStringList() << "Title" << "Artist" << "Album" << "Genre" << "Path" << "Art");
+        ui->treeView->header()->moveSection(5,0);
 
         qDebug() << "here";
 
@@ -839,6 +850,8 @@ void MainWindow::on_actionOpen_triggered()
                 songItemModel->setItem(row, 2, new QStandardItem(list[2]));
                 songItemModel->setItem(row, 3, new QStandardItem(list[3]));
                 songItemModel->setItem(row, 4, new QStandardItem(list[4]));//path
+                songItemModel->setItem(row, 5, new QStandardItem(QIcon(getAlbumArt(list[2])), ""));
+
 
                 QFile file(list[4]);
 
@@ -863,6 +876,7 @@ void MainWindow::on_actionOpen_triggered()
         ui->treeView->resizeColumnToContents(1);
         ui->treeView->resizeColumnToContents(2);
         ui->treeView->resizeColumnToContents(3);
+        ui->treeView->resizeColumnToContents(5);
 
         isLoading = false;
 
@@ -876,7 +890,7 @@ void MainWindow::slot_itemChanged(QStandardItem* item)
 {
     changesMade();
     //If new data is empty replace string with Unknown
-    if (item->text() == "" || item->text() == " ")
+    if ((item->text() == "" || item->text() == " ") && item->column() != 5)
     {
         //Maybe block signal first so that this next statement doesnt trigger slot_temChanged
         //thus avoiding an infinite loop (not sure if setText will trigger it)
@@ -932,6 +946,9 @@ void MainWindow::slot_selectionChanged()
     QString currentAlbum = songItemModel->item(ui->treeView->currentIndex().row(),2)->text();
     qDebug() << currentAlbum;
 
+    QPixmap pic = getAlbumArt(currentAlbum);
+    /*
+
     //turn album name into simple string, all lowecase with no numbers (this is the filename of the artwork)
     QString plainAlbum = currentAlbum.toLower().remove(QRegExp(QString::fromUtf8("[^a-zA-Z0-9]")));
 
@@ -965,7 +982,7 @@ void MainWindow::slot_selectionChanged()
     {
         pic.load(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
     }
-
+    */
 
     ui->albumCoverLabel->setPixmap(pic.scaled(200,200,Qt::KeepAspectRatio,Qt::SmoothTransformation));
     songItemModel->item(ui->treeView->currentIndex().row(),2)->setIcon(QIcon(pic));
@@ -1047,6 +1064,48 @@ QMenuBar *MainWindow::createMenuBar()
 
     return menuBar;
 
+
+}
+
+//Returns pixmap of album art for a given album title
+//If none found it will use the default image
+QPixmap MainWindow::getAlbumArt(QString albumTitle)
+{
+    //turn album name into simple string, all lowecase with no numbers (this is the filename of the artwork)
+    QString plainAlbum = albumTitle.toLower().remove(QRegExp(QString::fromUtf8("[^a-zA-Z0-9]")));
+
+    qDebug() << plainAlbum;
+
+    //Find file
+    QDir dir(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\" + currentUser);
+
+    QStringList filter, fileList;
+    filter << (plainAlbum + "*");
+    fileList = dir.entryList(filter, QDir::Files);
+
+    QString fileNameWExt;
+
+    if (!fileList.isEmpty())
+    {
+        qDebug() << fileList[0];
+        fileNameWExt = fileList[0];
+
+    }
+    else
+    {
+        qDebug() << "empty";
+        fileNameWExt = "foo.jpg";
+    }
+
+    QPixmap pic(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\" + currentUser + "\\" + fileNameWExt);
+
+    //If picture doesnt exist use default image
+    if (pic.isNull())
+    {
+        pic.load(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
+    }
+
+    return pic;
 
 }
 
@@ -1206,7 +1265,8 @@ void MainWindow::on_actionNew_triggered()
 
         //Clear current songItemModel and reset header
         songItemModel->clear();
-        songItemModel->setHorizontalHeaderLabels(QStringList() << "Title" << "Artist" << "Album" << "Genre");
+        songItemModel->setHorizontalHeaderLabels(QStringList() << "Title" << "Artist" << "Album" << "Genre" << "Path" << "Art");
+        ui->treeView->header()->moveSection(5,0);
 
         currentUser = user;
         this->setWindowTitle(user);
@@ -1414,9 +1474,10 @@ void MainWindow::on_actionPreferences_triggered()
         changeStyleSheet(prefsWin->stylePath);
         enableDropShadows(prefsWin->dropShadowsEnabled);
         setDropShadowProperties(prefsWin->blurRadius, Qt::black);
+        useCustomFrame(prefsWin->useCustomFrame);
 
     }
-    //delete prefsWin;
+    delete prefsWin;
 }
 
 void MainWindow::on_actionFind_album_art_triggered()

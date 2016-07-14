@@ -29,6 +29,7 @@ public:
     QString stylePath;
     bool dropShadowsEnabled;
     int blurRadius;
+    bool useCustomFrame;
 
 private slots:
     void on_chooseStyleSheetPushButton_clicked();

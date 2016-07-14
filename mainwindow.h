@@ -157,6 +157,9 @@ private:
 
     SpectrumVisualizer visualizer;
 
+    // Returns stored album art if it exists
+    QPixmap getAlbumArt(QString albumTitle);
+
     bool validateSongList(QString fileName);
     void addFile(std::string path);
     void writeSaveFile(QFile &file);
@@ -169,6 +172,8 @@ private:
 
 
     void updateCurrentSongInfoDisplay();
+
+    void useCustomFrame(bool use);
 
 
 
