@@ -946,7 +946,7 @@ void MainWindow::slot_selectionChanged()
     QString currentAlbum = songItemModel->item(ui->treeView->currentIndex().row(),2)->text();
     qDebug() << currentAlbum;
 
-    QPixmap pic = getAlbumArt(currentAlbum);
+    //QPixmap pic = getAlbumArt(currentAlbum);
     /*
 
     //turn album name into simple string, all lowecase with no numbers (this is the filename of the artwork)
@@ -984,8 +984,10 @@ void MainWindow::slot_selectionChanged()
     }
     */
 
+    QIcon picIcon = qvariant_cast<QIcon>(songItemModel->item(ui->treeView->currentIndex().row(),5)->data(Qt::DecorationRole));
+    QPixmap pic = picIcon.pixmap(200,200);
     ui->albumCoverLabel->setPixmap(pic.scaled(200,200,Qt::KeepAspectRatio,Qt::SmoothTransformation));
-    songItemModel->item(ui->treeView->currentIndex().row(),2)->setIcon(QIcon(pic));
+    //songItemModel->item(ui->treeView->currentIndex().row(),2)->setIcon(QIcon(pic));
 }
 
 //REMOVE THIS
