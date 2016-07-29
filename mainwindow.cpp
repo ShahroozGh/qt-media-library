@@ -710,7 +710,7 @@ void MainWindow::on_actionSave_as_triggered()
 void MainWindow::on_actionSave_triggered()
 {
     //Check if file DNE, if so call saveAs func
-    QFile file(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\lists\\" + currentUser + ".txt");
+    QFile file(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\lists\\" + currentUser + ".json");
 
     if (!file.open(QIODevice::WriteOnly)){
         //Error
@@ -730,6 +730,7 @@ void MainWindow::on_actionSave_triggered()
 //Write updated data in model (song list) to correct text file for current library
 void MainWindow::writeSaveFile(QFile &file)
 {
+    /*
     QTextStream output(&file);
 
     for (int row = 0; row < songItemModel->rowCount(); row++)
@@ -743,6 +744,33 @@ void MainWindow::writeSaveFile(QFile &file)
 
 
     output.flush();
+    file.close();
+
+*/
+    //Using json format
+
+    //Create a json array of tracks
+    QJsonObject topLevel;
+    QJsonArray trackList;
+
+    for (int row = 0; row < songItemModel->rowCount(); row++)
+    {
+        QJsonObject track;
+        track.insert("title", songItemModel->item(row,0)->text());
+        track.insert("artist", songItemModel->item(row,1)->text());
+        track.insert("album", songItemModel->item(row,2)->text());
+        track.insert("genre", songItemModel->item(row,3)->text());
+        track.insert("audio_path", songItemModel->item(row,4)->text());
+
+        trackList.append(track);
+    }
+    topLevel.insert("tracks", trackList);
+
+    QJsonDocument saveFile;
+    saveFile.setObject(topLevel);
+
+    file.write(saveFile.toJson());
+
     file.close();
 
 }
@@ -772,6 +800,7 @@ void MainWindow::changesSaved()
 //-----------------------------------------------------------
 void MainWindow::on_actionOpen_triggered()
 {
+    /*
     //Use message box to give user opportunity to save changes
     //Should only do this if there are unsaved changes
     QMessageBox msgBox;
@@ -885,6 +914,143 @@ void MainWindow::on_actionOpen_triggered()
                 row++;
             }
         }while(!line.isNull());
+
+        file.close();
+        //Resize Columns
+        ui->treeView->resizeColumnToContents(0);
+        ui->treeView->resizeColumnToContents(1);
+        ui->treeView->resizeColumnToContents(2);
+        ui->treeView->resizeColumnToContents(3);
+        ui->treeView->resizeColumnToContents(5);
+
+        isLoading = false;
+
+        changesSaved();
+
+    }
+    */
+
+
+    //Use message box to give user opportunity to save changes
+    //Should only do this if there are unsaved changes
+    QMessageBox msgBox;
+    msgBox.setText("The document has been modified.");
+    msgBox.setInformativeText("Do you want to save your changes?");
+    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Save);
+    int option = msgBox.exec();
+
+    switch (option) {
+      case QMessageBox::Save:
+          // Save was clicked
+            on_actionSave_triggered();
+          break;
+      case QMessageBox::Discard:
+          // Don't Save was clicked
+            //Cont to open dialog
+          break;
+      case QMessageBox::Cancel:
+          // Cancel was clicked
+          //call return so that we dont continue with the open operation
+            return;
+          break;
+      default:
+          // should never be reached
+          break;
+    }
+
+    //Contiue to open open dialog
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\lists", tr("JSON Files (*.json)"));
+
+    if (!fileName.isEmpty()){
+
+
+
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly)){
+            QMessageBox::critical(this, tr("Error"), tr("Could not open"));
+            return;
+        }
+
+        //Clear current songItemModel and reset header
+        songItemModel->clear();
+        songItemModel->setHorizontalHeaderLabels(QStringList() << "Title" << "Artist" << "Album" << "Genre" << "Path" << "Art");
+        ui->treeView->header()->moveSection(5,0);
+
+
+        //Get name of file and setTitle to this
+        currentUser = QFileInfo(fileName).baseName();
+        this->setWindowTitle(currentUser);
+
+        //Read file
+        //Create JSON doc
+        QJsonDocument saveFileDoc = QJsonDocument::fromJson(file.readAll());
+
+        //Get main object and track array
+        QJsonObject topLevelObj = saveFileDoc.object();
+
+        QJsonArray tracks = topLevelObj["tracks"].toArray();
+        qDebug() << "GOT TOP";
+
+        //Make sure other parts of the program know data is still being loaded
+        isLoading = true;
+
+        for (int row = 0; row < tracks.size(); row++){
+
+            QJsonObject track = tracks[row].toObject();
+            qDebug() << "GOT TRACK";
+            QString title = track["title"].toString();
+            QString artist = track["artist"].toString();
+            QString album = track["album"].toString();
+            QString genre = track["genre"].toString();
+            QString songPath = track["audio_path"].toString();
+
+            qDebug() << "GOT STUFF"  << title << " " << artist << " " << album << " " << genre << " "  << songPath;
+
+
+            songItemModel->setItem(row, 0, new QStandardItem(title));
+            qDebug() << "TITLE STUFF";
+            songItemModel->setItem(row, 1, new QStandardItem(artist));
+            qDebug() << "ARTIST STUFF";
+            songItemModel->setItem(row, 2, new QStandardItem(album));
+            qDebug() << "ALBUM STUFF";
+            songItemModel->setItem(row, 3, new QStandardItem(genre));
+            qDebug() << "GENER STUFF";
+            songItemModel->setItem(row, 4, new QStandardItem(songPath));
+
+            qDebug() << "SET STUFF";
+
+            QPixmap albumArt = getAlbumArt(album);
+            if (albumArt.isNull()){
+                albumArt = defaultAlbumArt;
+                songItemModel->setItem(row, 5, new QStandardItem(QIcon(albumArt), ""));
+                //False if has no album art
+                songItemModel->item(row, 5)->setData(false, Qt::UserRole + 2);
+            }
+            else{
+                songItemModel->setItem(row, 5, new QStandardItem(QIcon(albumArt), ""));
+                songItemModel->item(row, 5)->setData(true, Qt::UserRole + 2);
+            }
+
+            songItemModel->setItem(row, 6, new QStandardItem(""));
+
+
+            QFile file(songPath);
+
+            if (!file.exists())
+            {
+                QBrush brush(Qt::gray);
+                songItemModel->item(row,0)->setForeground(brush);
+                songItemModel->item(row,1)->setForeground(brush);
+                songItemModel->item(row,2)->setForeground(brush);
+                songItemModel->item(row,3)->setForeground(brush);
+                songItemModel->item(row,4)->setForeground(brush);
+            }
+
+
+        }
+
+
 
         file.close();
         //Resize Columns
