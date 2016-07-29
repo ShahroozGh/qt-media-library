@@ -44,6 +44,8 @@
 
 #include "SpectrumVisualizer.h"
 
+#include "songdatafetcher.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -122,6 +124,8 @@ private slots:
 
     void on_actionFind_album_art_triggered();
 
+    void on_actionFind_artist_art_triggered();
+
     void on_pushButtonPg1_clicked();
 
     void on_pushButtonPg2_clicked();
@@ -144,6 +148,7 @@ private:
     Ui::MainWindow *ui;
     QStandardItemModel *songItemModel;          //Data struct that holds song list data for display
 
+    QPixmap defaultAlbumArt;
     QString currentUser, currentSongPath;
     QMediaPlayer *player;
     QTimer *updateTimer;

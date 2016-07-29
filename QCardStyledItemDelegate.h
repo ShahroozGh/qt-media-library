@@ -16,6 +16,20 @@ public:
     //void setEditorData(QWidget *editor, const QModelIndex &index) const ;
     //void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const ;
 
+    /*
+    struct ItemGeometry {
+        QPoint primTextPos;
+        QPoint secTextPos;
+
+        QRect itemBounds;
+        QRect pixmapBounds;
+
+        QRect innerTextBounds;
+    };
+
+    ItemGeometry geometry;
+    */
+
 };
 
 #endif // QCARDSTYLEDITEMDELEGATE_H

@@ -26,9 +26,11 @@ AddArtworkDialog::~AddArtworkDialog()
     delete ui;
 }
 
-void AddArtworkDialog::setAlbumQuery(QString albumTitle)
+void AddArtworkDialog::setQuery(QString query, QueryType type)
 {
-    albumName = albumTitle;
+    this->query = query;
+    this->qType = type;
+    //albumName = albumTitle;
 }
 
 
@@ -37,8 +39,11 @@ void AddArtworkDialog::on_artSearchPushButton_clicked()
     netManager = new QNetworkAccessManager(this);
 
     //QObject::connect(netManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(requestFinished(QNetworkReply*)));
-
-    QUrl url("https://api.spotify.com/v1/search?q=" + QUrl::toPercentEncoding(albumName) + "&type=album");
+    QUrl url;
+    if (qType == QueryType::Album)
+        url = QUrl("https://api.spotify.com/v1/search?q=" + QUrl::toPercentEncoding(query) + "&type=album");
+    else
+        url = QUrl("https://api.spotify.com/v1/search?q=" + QUrl::toPercentEncoding(query) + "&type=artist");
 
     QNetworkReply* reply = netManager->get(QNetworkRequest(url));
     QObject::connect(reply, SIGNAL(finished()),this, SLOT(requestFinished()));
@@ -119,7 +124,13 @@ QVector<QString> AddArtworkDialog::getImgURLsFromJSON(QString jsonData)
     QJsonDocument doc = QJsonDocument::fromJson(jsonData.toUtf8());
     QJsonObject baseObj = doc.object();
 
-    QJsonObject albumsObj = baseObj.value("albums").toObject();
+    QString value;
+    if (qType == QueryType::Album)
+        value = "albums";
+    else
+        value = "artists";
+
+    QJsonObject albumsObj = baseObj.value(value).toObject();
     qDebug() << "Limit: " << albumsObj["limit"].toInt();
 
     //Get album list

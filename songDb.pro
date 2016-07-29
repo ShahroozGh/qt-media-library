@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     QCategoryFilterProxyModel.cpp \
     QCardStyledItemDelegate.cpp \
     customtitlebar.cpp \
-    customcentralwidget.cpp
+    customcentralwidget.cpp \
+    songdatafetcher.cpp
 
 HEADERS  += mainwindow.h \
     AudioSystem.h \
@@ -34,7 +35,8 @@ HEADERS  += mainwindow.h \
     QCategoryFilterProxyModel.h \
     QCardStyledItemDelegate.h \
     customtitlebar.h \
-    customcentralwidget.h
+    customcentralwidget.h \
+    songdatafetcher.h
 
 
 FORMS    += mainwindow.ui \

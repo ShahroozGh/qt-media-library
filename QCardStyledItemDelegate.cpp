@@ -2,6 +2,18 @@
 
 void QCardStyledItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    //Set relevant geometry for convenience
+    QSize infoBoxSize = option.rect.size() - option.decorationSize;
+    QRect itemBounds = option.rect;
+    QPoint primTextPos = QPoint(option.rect.topLeft().x() + 10, option.rect.topLeft().y() + option.decorationSize.height() + 0.5 * infoBoxSize.height());
+    QPoint secTextPos = QPoint(option.rect.topLeft().x() + 10, option.rect.topLeft().y() + option.decorationSize.height() + 0.75 * infoBoxSize.height());
+    QRect pixmapBounds = QRect(option.rect.topLeft().x(), option.rect.topLeft().y(), option.decorationSize.width(), option.decorationSize.height());
+    QRect innerTextBounds = QRect(option.rect.left() + 10, option.rect.top(), option.rect.width() - 20, option.rect.height());
+
+    QFont primFont = QFont("Roboto Lt");
+    QFontMetrics fm(primFont);
+
+
     QString albumTitle = index.data(Qt::DisplayRole).toString();
     QString artist = index.data(Qt::UserRole + 1).toString();
 
@@ -21,43 +33,56 @@ void QCardStyledItemDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     //Paint Background
     //QBrush bg = option.palette.background();
-    QBrush bg(QColor("#212121"));
+    QBrush bg;
+    if (option.state & QStyle::State_MouseOver)
+        bg = QBrush(QColor("#0000FF"));
+    else
+        bg = QBrush(QColor("#212121"));
+
     pen.setColor(QColor("#262321"));
 
     painter->setBrush(bg);
     painter->setPen(pen);
 
-    painter->fillRect(option.rect, bg);
+    painter->fillRect(itemBounds, bg);
 
 
     //Paint album pixmap
-    painter->drawPixmap(option.rect.topLeft().x(), option.rect.topLeft().y(), option.decorationSize.width(), option.decorationSize.height(), albumCover);
+    painter->drawPixmap(pixmapBounds, albumCover);
 
     //Paint border
     painter->setBrush(QBrush(QColor(0,0,0,0)));
-    painter->drawRect(option.rect);
+    painter->drawRect(itemBounds);
     //Paint text
-    QSize infoBoxSize = option.rect.size() - option.decorationSize;
+    //QSize infoBoxSize = option.rect.size() - option.decorationSize;
 
     pen.setColor(QColor("#f6f6f6"));
     painter->setPen(pen);
     //Font properties
     //QFont primFont = option.font;
-    QFont primFont = QFont("Roboto Lt");
+
     primFont.setPointSize(11);
     primFont.setStyleStrategy(QFont::PreferAntialias);
     painter->setFont(primFont);
     //qDebug() << primFont.rawName();
 
-    QPoint primFontPos, secFontPos;
-    primFontPos.setX(option.rect.topLeft().x() + 10);
-    primFontPos.setY(option.rect.topLeft().y() + option.decorationSize.height() + 0.5 * infoBoxSize.height());
 
-    secFontPos.setX(option.rect.topLeft().x() + 10);
-    secFontPos.setY(option.rect.topLeft().y() + option.decorationSize.height() + 0.75 * infoBoxSize.height());
+    //Set clipping mask for text so that it fits in box
+    painter->drawRect(innerTextBounds);
+    painter->setClipRect(innerTextBounds, Qt::ReplaceClip);
 
-    painter->drawText(primFontPos, albumTitle);
-    painter->drawText(secFontPos, artist);
+
+    //If not hovered show elided text
+    albumTitle = fm.elidedText(albumTitle, Qt::ElideRight, innerTextBounds.width());
+
+
+    painter->drawText(primTextPos, albumTitle);
+
+    painter->setClipRect(innerTextBounds, Qt::NoClip);
+    //painter->setClipping(false);
+
+    painter->drawText(secTextPos, artist);
+
 
 
 

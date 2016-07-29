@@ -21,6 +21,8 @@ namespace Ui {
 class AddArtworkDialog;
 }
 
+enum QueryType {Album, Artist};
+
 class AddArtworkDialog : public QDialog
 {
     Q_OBJECT
@@ -31,7 +33,7 @@ public:
 
     QPixmap selectedImg;
 
-    void setAlbumQuery(QString albumTitle);
+    void setQuery(QString query, QueryType type);
 
 
 
@@ -45,6 +47,8 @@ private slots:
 
 private:
     Ui::AddArtworkDialog *ui;
+    QString query;
+    QueryType qType;
     QString albumName;
     QNetworkAccessManager* netManager;
     QVector<QPixmap> albumImages;

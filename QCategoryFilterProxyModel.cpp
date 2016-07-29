@@ -20,7 +20,12 @@ QVariant QCategoryFilterProxyModel::data(const QModelIndex &idx, int role) const
     }
     else if(role == Qt::DecorationRole){
         //get art index from source model
-        QModelIndex artIndex = sourceModel()->index(mapToSource(idx).row(), 5);
+        int imgCol;
+        if (filterKeyColumn() == 2)
+            imgCol = 5;
+        else if(filterKeyColumn() == 1)
+            imgCol = 6;
+        QModelIndex artIndex = sourceModel()->index(mapToSource(idx).row(), imgCol);
         //return icon from art column
         return artIndex.data(Qt::DecorationRole);
     }

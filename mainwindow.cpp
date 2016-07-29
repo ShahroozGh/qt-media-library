@@ -71,6 +71,8 @@ MainWindow::MainWindow(QWidget *parent) :
    //Set album picture to default
    QPixmap pic(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
    ui->albumCoverLabel->setPixmap(pic.scaled(200,200,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+
+   defaultAlbumArt.load(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
     //ui->treeView->editTriggers()
 
 
@@ -627,14 +629,16 @@ void MainWindow::on_pushButtonSearch_clicked()
 
     qDebug() << "search clicked";
     //ui->lineEditSearch->clear();
-
+    /*
     ui->treeView->setModel(songItemModel);
     qDebug() << "Unselected";
     ui->lineEditSearch->clear();
     QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
 
     useCustomFrame(false);
-
+*/
+    SongDataFetcher* fetcher = new SongDataFetcher();
+    fetcher->fetchAndSetAllArt(songItemModel);
 }
 //-----------------------------------------------------------
 //Delete, sort button doesnt exist anymore
@@ -850,7 +854,19 @@ void MainWindow::on_actionOpen_triggered()
                 songItemModel->setItem(row, 2, new QStandardItem(list[2]));
                 songItemModel->setItem(row, 3, new QStandardItem(list[3]));
                 songItemModel->setItem(row, 4, new QStandardItem(list[4]));//path
-                songItemModel->setItem(row, 5, new QStandardItem(QIcon(getAlbumArt(list[2])), ""));
+                QPixmap albumArt = getAlbumArt(list[2]);
+                if (albumArt.isNull()){
+                    albumArt = defaultAlbumArt;
+                    songItemModel->setItem(row, 5, new QStandardItem(QIcon(albumArt), ""));
+                    //False if has no album art
+                    songItemModel->item(row, 5)->setData(false, Qt::UserRole + 2);
+                }
+                else{
+                    songItemModel->setItem(row, 5, new QStandardItem(QIcon(albumArt), ""));
+                    songItemModel->item(row, 5)->setData(true, Qt::UserRole + 2);
+                }
+
+                songItemModel->setItem(row, 6, new QStandardItem(""));
 
 
                 QFile file(list[4]);
@@ -933,7 +949,6 @@ void MainWindow::slot_itemChanged(QStandardItem* item)
     //free(brush);
 
 }
-
 
 //Triggered when a row in the song list is selected
 //This function will then update the album image currently displayed to match the selected song
@@ -1061,6 +1076,7 @@ QMenuBar *MainWindow::createMenuBar()
     //Add Edit actions
     editMenu->addAction("Find Album Art...", this, SLOT(on_actionFind_album_art_triggered()));
     editMenu->addAction("Add art from file...", this, SLOT(on_actionAdd_art_form_file_triggered()));
+    editMenu->addAction("Find Artist Art...", this, SLOT(on_actionFind_artist_art_triggered()));
     editMenu->addAction("Link Music file...", this, SLOT(on_actionLink_Music_File_triggered()));
     editMenu->addAction("Preferences...", this, SLOT(on_actionPreferences_triggered()));
 
@@ -1104,7 +1120,7 @@ QPixmap MainWindow::getAlbumArt(QString albumTitle)
     //If picture doesnt exist use default image
     if (pic.isNull())
     {
-        pic.load(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
+        //pic.load(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\default.jpg");
     }
 
     return pic;
@@ -1497,7 +1513,7 @@ void MainWindow::on_actionFind_album_art_triggered()
 
 
     AddArtworkDialog* artWin = new AddArtworkDialog(this);
-    artWin->setAlbumQuery(currentAlbum);
+    artWin->setQuery(currentAlbum, QueryType::Album);
     if (artWin->exec() == QDialog::Accepted){
         qDebug() << "ACCEPT";
         QPixmap img = artWin->selectedImg;
@@ -1511,9 +1527,72 @@ void MainWindow::on_actionFind_album_art_triggered()
             QFile file(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\" + currentUser + "\\" + plainAlbum + "." + "png");
             file.open(QIODevice::WriteOnly);
             img.save(&file, "PNG");
+
+            //Update pixmaps in the song model with new album covers
+            qDebug() << songItemModel->rowCount();
+            for (int i = 0; i < songItemModel->rowCount(); i++){
+                QStandardItem* item = songItemModel->item(i,5);
+                QStandardItem* albumItem = songItemModel->item(i,2);
+                if (albumItem->text() == currentAlbum){
+                    //item->setData(QIcon(img), Qt::DecorationRole);
+                    item->setIcon(QIcon(img));
+                qDebug() << "Icon set";
+                    }
+
+            }
+
         }
     }
 
+
+}
+
+void MainWindow::on_actionFind_artist_art_triggered()
+{
+
+    //Get selected artist
+    if (!ui->treeView->currentIndex().isValid()){
+        QMessageBox::critical(this, tr("Error"), tr("No Song Selected"));
+        return;
+    }
+
+
+    QString currentArtist = songItemModel->item(ui->treeView->currentIndex().row(),1)->text();
+
+
+
+
+    AddArtworkDialog* artWin = new AddArtworkDialog(this);
+    artWin->setQuery(currentArtist, QueryType::Artist);
+    if (artWin->exec() == QDialog::Accepted){
+        qDebug() << "ACCEPT";
+        QPixmap img = artWin->selectedImg;
+
+        //Store the image
+        QString plainArtist = currentArtist.toLower().remove(QRegExp(QString::fromUtf8("[^a-zA-Z0-9]")));
+
+
+        //Need to check to overwrite
+        if (true){
+            QFile file(QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "\\songPro\\artwork\\" + currentUser + "\\artists\\" + plainArtist + "." + "png");
+            file.open(QIODevice::WriteOnly);
+            img.save(&file, "PNG");
+
+            //Update pixmaps in the song model with new album covers
+            qDebug() << songItemModel->rowCount();
+            for (int i = 0; i < songItemModel->rowCount(); i++){
+                QStandardItem* item = songItemModel->item(i,6);
+                QStandardItem* albumItem = songItemModel->item(i,1);
+                if (albumItem->text() == currentArtist){
+                    //item->setData(QIcon(img), Qt::DecorationRole);
+                    item->setIcon(QIcon(img));
+                qDebug() << "Icon set";
+                    }
+
+            }
+
+        }
+    }
 
 }
 
