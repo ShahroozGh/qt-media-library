@@ -124,6 +124,8 @@ private slots:
 
     void on_actionFind_album_art_triggered();
 
+    void on_actionFind_all_missing_art();
+
     void on_actionFind_artist_art_triggered();
 
     void on_pushButtonPg1_clicked();

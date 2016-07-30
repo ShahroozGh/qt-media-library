@@ -48,8 +48,27 @@ void QCardStyledItemDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
 
     //Paint album pixmap
-    painter->drawPixmap(pixmapBounds, albumCover);
+    if (!albumCover.isNull()){
+        QPixmap scaledImage = albumCover.scaled(pixmapBounds.size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+        QRect srcArea(0,0,pixmapBounds.width(),pixmapBounds.height());
+        qDebug() << "pixmapBounds x: " << pixmapBounds.width();
+        qDebug() << "scaled x:" << scaledImage.width();
 
+        if (scaledImage.width() > pixmapBounds.width()){
+            srcArea.setX((scaledImage.width() - pixmapBounds.width())/2);
+            srcArea.setWidth(pixmapBounds.width());
+
+        }
+        else if(scaledImage.width() < pixmapBounds.width()){
+            srcArea.setY((scaledImage.height() - pixmapBounds.height())/2);
+            srcArea.setHeight(pixmapBounds.height());
+        }
+
+        QPixmap copy = scaledImage.copy(srcArea);
+
+        painter->drawPixmap(pixmapBounds.x(),pixmapBounds.y(), copy);
+    }
+    //painter->drawPixmap(pixmapBounds, albumCover);
     //Paint border
     painter->setBrush(QBrush(QColor(0,0,0,0)));
     painter->drawRect(itemBounds);

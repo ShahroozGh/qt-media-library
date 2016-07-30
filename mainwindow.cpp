@@ -629,16 +629,14 @@ void MainWindow::on_pushButtonSearch_clicked()
 
     qDebug() << "search clicked";
     //ui->lineEditSearch->clear();
-    /*
+
     ui->treeView->setModel(songItemModel);
     qDebug() << "Unselected";
     ui->lineEditSearch->clear();
     QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
 
     useCustomFrame(false);
-*/
-    SongDataFetcher* fetcher = new SongDataFetcher();
-    fetcher->fetchAndSetAllArt(songItemModel);
+
 }
 //-----------------------------------------------------------
 //Delete, sort button doesnt exist anymore
@@ -1242,6 +1240,7 @@ QMenuBar *MainWindow::createMenuBar()
     //Add Edit actions
     editMenu->addAction("Find Album Art...", this, SLOT(on_actionFind_album_art_triggered()));
     editMenu->addAction("Add art from file...", this, SLOT(on_actionAdd_art_form_file_triggered()));
+    editMenu->addAction("Find All Missing art", this, SLOT(on_actionFind_all_missing_art()));
     editMenu->addAction("Find Artist Art...", this, SLOT(on_actionFind_artist_art_triggered()));
     editMenu->addAction("Link Music file...", this, SLOT(on_actionLink_Music_File_triggered()));
     editMenu->addAction("Preferences...", this, SLOT(on_actionPreferences_triggered()));
@@ -1711,6 +1710,12 @@ void MainWindow::on_actionFind_album_art_triggered()
     }
 
 
+}
+
+void MainWindow::on_actionFind_all_missing_art()
+{
+    SongDataFetcher* fetcher = new SongDataFetcher(this);
+    fetcher->fetchAndSetAllArt(songItemModel);
 }
 
 void MainWindow::on_actionFind_artist_art_triggered()
