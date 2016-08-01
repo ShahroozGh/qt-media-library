@@ -46,6 +46,8 @@ public:
 	FMOD::ChannelGroup *mastergroup;
 	FMOD::DSP *mydsp;
 
+    FMOD::DSP *eqDSP, *eqDSP2, *eqDSP3;
+
 	FMOD_DSP_PARAMETER_FFT *fftparameter;
 	
 	void initFMOD();
@@ -57,6 +59,8 @@ public:
 	void updateTick();
 
 	void updateFFT();
+
+    void setEqParams(float gain, float center, float bandwidth, int eq);
 
 	std::vector<float> getFormattedSpectrumData();
     std::vector<float> getRawSpectrumData();

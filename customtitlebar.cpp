@@ -66,7 +66,7 @@ void CustomTitleBar::mouseMoveEvent(QMouseEvent *event)
         //Update clicked pos
         //clickedPos = event->pos();
         //qDebug() << clickedPos.x() << "," << clickedPos.y();
-        qDebug() << "MINIMIZED";
+        //qDebug() << "MINIMIZED";
         justMinimized = true;
     }
     else{
@@ -88,8 +88,8 @@ void CustomTitleBar::mouseMoveEvent(QMouseEvent *event)
         }
         //Also want to shift to meet mouse at correct spot
         justMinimized = false;
-        qDebug() << "New:" << newPos.x() << "," << newPos.y();
-        qDebug() << "Clicked: " << clickedPos.x() << "," << clickedPos.y();
+        //qDebug() << "New:" << newPos.x() << "," << newPos.y();
+       // qDebug() << "Clicked: " << clickedPos.x() << "," << clickedPos.y();
         window()->move(newPos - clickedPos);//Without clickedPos mouse will follow in top left corner always
     }
 

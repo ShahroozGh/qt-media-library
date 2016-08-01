@@ -46,6 +46,8 @@
 
 #include "songdatafetcher.h"
 
+#include "equalizerdialog.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -145,6 +147,8 @@ private slots:
     void on_minMaxB_clicked();
 
     void on_minimizeB_clicked();
+
+    void on_eqPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

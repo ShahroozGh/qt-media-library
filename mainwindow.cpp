@@ -519,7 +519,27 @@ void MainWindow::addFile(std::string path)
     //Insert list of items as a row
     songItemModel->insertRow(0, list);
 
+    songItemModel->setItem(0, 0, titleItem);
+    songItemModel->setItem(0, 1, artistItem);
+    songItemModel->setItem(0, 2, albumItem);
+    songItemModel->setItem(0, 3, genreItem);
+    songItemModel->setItem(0, 4, pathItem);
 
+    qDebug() << "SET STUFF";
+
+    QPixmap albumArt = getAlbumArt(album);
+    if (albumArt.isNull()){
+        albumArt = defaultAlbumArt;
+        songItemModel->setItem(0, 5, new QStandardItem(QIcon(albumArt), ""));
+        //False if has no album art
+        songItemModel->item(0, 5)->setData(false, Qt::UserRole + 2);
+    }
+    else{
+        songItemModel->setItem(0, 5, new QStandardItem(QIcon(albumArt), ""));
+        songItemModel->item(0, 5)->setData(true, Qt::UserRole + 2);
+    }
+
+    songItemModel->setItem(0, 6, new QStandardItem(""));
 
     //Resize columns
     ui->treeView->resizeColumnToContents(0);
@@ -1879,4 +1899,13 @@ void MainWindow::on_minMaxB_clicked()
 void MainWindow::on_minimizeB_clicked()
 {
     window()->showMinimized();
+}
+
+
+void MainWindow::on_eqPushButton_clicked()
+{
+    EqualizerDialog* eqDialog = new EqualizerDialog(this);
+    eqDialog->setAudioSystem(&fmodSys);
+    eqDialog->show();
+
 }

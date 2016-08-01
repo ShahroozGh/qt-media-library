@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     QCardStyledItemDelegate.cpp \
     customtitlebar.cpp \
     customcentralwidget.cpp \
-    songdatafetcher.cpp
+    songdatafetcher.cpp \
+    equalizerdialog.cpp \
+    customqdial.cpp
 
 HEADERS  += mainwindow.h \
     AudioSystem.h \
@@ -36,12 +38,15 @@ HEADERS  += mainwindow.h \
     QCardStyledItemDelegate.h \
     customtitlebar.h \
     customcentralwidget.h \
-    songdatafetcher.h
+    songdatafetcher.h \
+    equalizerdialog.h \
+    customqdial.h
 
 
 FORMS    += mainwindow.ui \
     prefsdialog.ui \
-    addartworkdialog.ui
+    addartworkdialog.ui \
+    equalizerdialog.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/'../../../../Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/lib/' -lfmod_vc
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/'../../../../Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/lib/' -lfmod_vc

@@ -62,6 +62,39 @@ void AudioSystem::initFMOD()
 	result = mydsp->setBypass(false);
 	result = mydsp->setActive(true);
 
+    //Create DSP's for eq
+
+    result = system->createDSPByType(FMOD_DSP_TYPE_PARAMEQ, &eqDSP);
+    result = mastergroup->addDSP(1, eqDSP);
+
+    result = eqDSP->setBypass(false);
+    result = eqDSP->setActive(true);
+
+    result = system->createDSPByType(FMOD_DSP_TYPE_PARAMEQ, &eqDSP2);
+    result = mastergroup->addDSP(1, eqDSP2);
+
+    result = eqDSP->setBypass(false);
+    result = eqDSP->setActive(true);
+
+    result = system->createDSPByType(FMOD_DSP_TYPE_PARAMEQ, &eqDSP3);
+    result = mastergroup->addDSP(1, eqDSP3);
+
+    result = eqDSP->setBypass(false);
+    result = eqDSP->setActive(true);
+
+    //Set connections
+    mydsp->addInput(eqDSP, 0, FMOD_DSPCONNECTION_TYPE_STANDARD);
+    mydsp->addInput(eqDSP2, 0, FMOD_DSPCONNECTION_TYPE_STANDARD);
+    mydsp->addInput(eqDSP3, 0, FMOD_DSPCONNECTION_TYPE_STANDARD);
+
+
+
+    setEqParams(0.0f, 500.0f, 0.2f, 0);
+    setEqParams(0.0f, 500.0f, 0.2f, 1);
+    setEqParams(0.0f, 500.0f, 0.2f, 2);
+
+    //
+
 	if (result != FMOD_OK) {
         std::cout << "ACTIVE PROBLEM in init()" << std::endl;
 
@@ -321,7 +354,22 @@ void AudioSystem::updateFFT()
 
 	result = mydsp->getParameterFloat(FMOD_DSP_FFT_DOMINANT_FREQ, &val, 0, 0);
 
-	result = mydsp->getParameterData(FMOD_DSP_FFT_SPECTRUMDATA, (void **)&fftparameter, &len, s, 256);
+    result = mydsp->getParameterData(FMOD_DSP_FFT_SPECTRUMDATA, (void **)&fftparameter, &len, s, 256);
+}
+
+void AudioSystem::setEqParams(float gain, float center, float bandwidth, int eq)
+{
+    FMOD::DSP* eqDSPChosen;
+    if (eq == 0)
+        eqDSPChosen = eqDSP;
+    else if (eq == 1)
+        eqDSPChosen = eqDSP2;
+    else if (eq == 2)
+        eqDSPChosen = eqDSP3;
+
+    result = eqDSPChosen->setParameterFloat(FMOD_DSP_PARAMEQ_CENTER, center);
+    result = eqDSPChosen->setParameterFloat(FMOD_DSP_PARAMEQ_BANDWIDTH, bandwidth);
+    result = eqDSPChosen->setParameterFloat(FMOD_DSP_PARAMEQ_GAIN, gain);
 }
 
 std::vector<float> AudioSystem::getFormattedSpectrumData()
