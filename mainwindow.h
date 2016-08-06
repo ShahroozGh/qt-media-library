@@ -48,6 +48,8 @@
 
 #include "equalizerdialog.h"
 
+#include "customqdial.h"
+
 namespace Ui {
 class MainWindow;
 }

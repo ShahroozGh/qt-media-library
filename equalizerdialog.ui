@@ -49,6 +49,27 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="2" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="eqBandwidthLabel2">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="eqBandwidthLabel1">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="eqBandwidthLabel3">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="1" alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="eqCenterLabel1">
      <property name="text">
@@ -71,7 +92,7 @@
     </widget>
    </item>
    <item row="0" column="2" alignment="Qt::AlignHCenter">
-    <widget class="QSlider" name="eqSlider2">
+    <widget class="CustomQSlider" name="eqSlider2">
      <property name="sliderPosition">
       <number>51</number>
      </property>
@@ -111,7 +132,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QDial" name="eqCenterDial1">
+    <widget class="CustomQDial" name="eqCenterDial1">
      <property name="notchesVisible">
       <bool>true</bool>
      </property>
@@ -148,29 +169,20 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="eqBandwidthLabel1">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="2" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="eqBandwidthLabel2">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="3" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="eqBandwidthLabel3">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomQDial</class>
+   <extends>QDial</extends>
+   <header>customqdial.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomQSlider</class>
+   <extends>QSlider</extends>
+   <header>customqslider.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

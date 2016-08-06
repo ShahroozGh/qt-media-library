@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     customcentralwidget.cpp \
     songdatafetcher.cpp \
     equalizerdialog.cpp \
-    customqdial.cpp
+    customqdial.cpp \
+    customqslider.cpp
 
 HEADERS  += mainwindow.h \
     AudioSystem.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     customcentralwidget.h \
     songdatafetcher.h \
     equalizerdialog.h \
-    customqdial.h
+    customqdial.h \
+    customqslider.h
 
 
 FORMS    += mainwindow.ui \

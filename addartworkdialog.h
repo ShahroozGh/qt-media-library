@@ -13,6 +13,8 @@
 #include <QVector>
 #include <QListWidgetItem>
 
+#include <QFileDialog>
+
 
 
 #include <iostream>
@@ -30,10 +32,11 @@ class AddArtworkDialog : public QDialog
 public:
     explicit AddArtworkDialog(QWidget *parent = 0);
     ~AddArtworkDialog();
-
+    QString currentUser;
     QPixmap selectedImg;
-
+    QPixmap defaultImg;
     void setQuery(QString query, QueryType type);
+    void setDefaultImg(QPixmap img);
 
 
 
@@ -44,6 +47,10 @@ private slots:
     void imgDownloadRequestComplete();
 
     void on_buttonBox_accepted();
+
+    void on_artworkListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
+    void on_findExistingArtButton_clicked();
 
 private:
     Ui::AddArtworkDialog *ui;

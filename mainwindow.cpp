@@ -1698,6 +1698,8 @@ void MainWindow::on_actionFind_album_art_triggered()
 
 
     AddArtworkDialog* artWin = new AddArtworkDialog(this);
+    artWin->currentUser = currentUser;
+    artWin->setDefaultImg(defaultAlbumArt);
     artWin->setQuery(currentAlbum, QueryType::Album);
     if (artWin->exec() == QDialog::Accepted){
         qDebug() << "ACCEPT";

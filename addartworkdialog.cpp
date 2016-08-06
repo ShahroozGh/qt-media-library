@@ -33,6 +33,12 @@ void AddArtworkDialog::setQuery(QString query, QueryType type)
     //albumName = albumTitle;
 }
 
+void AddArtworkDialog::setDefaultImg(QPixmap img)
+{
+    defaultImg = img;
+    ui->artPreviewLabel->setPixmap(img.scaled(200,200,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+}
+
 
 void AddArtworkDialog::on_artSearchPushButton_clicked()
 {
@@ -171,4 +177,32 @@ void AddArtworkDialog::on_buttonBox_accepted()
         }
 
     }
+}
+
+void AddArtworkDialog::on_artworkListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    QPixmap img = current->icon().pixmap(QSize(200,200));
+    ui->artPreviewLabel->setPixmap(img);
+
+}
+
+void AddArtworkDialog::on_findExistingArtButton_clicked()
+{
+    QString currentAlbum = query;
+
+    QString plainAlbum = currentAlbum.toLower().remove(QRegExp(QString::fromUtf8("[^a-zA-Z0-9]")));
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QStandardPaths::standardLocations(QStandardPaths::PicturesLocation)[0],
+            tr("Image Files (*.png *.jpg *.jpeg)"));
+
+    //Get the pixmap
+    QPixmap img;
+    img.load(fileName);
+
+    selectedImg = img;
+
+    //Update label
+    ui->artPreviewLabel->setPixmap(img.scaled(200,200,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+
+
 }

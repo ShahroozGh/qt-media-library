@@ -1,6 +1,12 @@
 QMainWindow {
     background-color: #313131;
 }
+
+QDialog {
+
+    background: #313131;
+}
+
 /*-------------------TITLE BAR + CONTENTS------------------*/
 /*Doesnt Work*/
 
@@ -692,6 +698,109 @@ QSlider::add-page:horizontal:disabled {
 }
 
 QSlider::handle:horizontal:disabled {
+    background: #eee;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+/*EQ SLIDERS*/
+QSlider#eqSlider1::groove:vertical {
+    background: #757581;
+    width: 10px;
+    border-radius: 4px;
+}
+
+QSlider#eqSlider1::sub-page:vertical {
+    background: #757581;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider#eqSlider1::add-page:vertical {
+    background: #fc575e;
+    height: 10px;
+    border-radius: 4px;
+}
+
+QSlider#eqSlider1::handle:vertical {
+    background: #222222;
+    height: 16px;
+    margin-left: -3px;
+    margin-right: -3px;
+    border-radius: 7px;
+}
+
+QSlider#eqSlider1::handle:vertical:hover {
+    background: #fc575e;
+    height: 16px;
+    margin-left: -3px;
+    margin-right: -3px;
+    border-radius: 7px;
+}
+
+QSlider#eqSlider1::sub-page:vertical:disabled {
+    background: #bbb;
+    border-color: #999;
+}
+
+QSlider#eqSlider1::add-page:vertical:disabled {
+    background: #eee;
+    border-color: #999;
+}
+
+QSlider#eqSlider1::handle:vertical:disabled {
+    background: #eee;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+/*Numero 2*/
+CustomQSlider#eqSlider2::groove:vertical {
+    background: #757581;
+    width: 10px;
+    border-radius: 4px;
+}
+
+CustomQSlider#eqSlider2::sub-page:vertical {
+    background: #757581;
+    height: 10px;
+    border-radius: 4px;
+}
+
+CustomQSlider#eqSlider2::add-page:vertical {
+    background: #fc575e;
+    height: 10px;
+    border-radius: 4px;
+}
+
+CustomQSlider#eqSlider2::handle:vertical {
+    background: #222222;
+    height: 16px;
+    margin-left: -3px;
+    margin-right: -3px;
+    border-radius: 7px;
+
+}
+
+CustomQSlider#eqSlider2::handle:vertical:hover {
+    background: #fc575e;
+    height: 16px;
+    margin-left: -3px;
+    margin-right: -3px;
+    border-radius: 7px;
+}
+
+CustomQSlider#eqSlider2::sub-page:vertical:disabled {
+    background: #bbb;
+    border-color: #999;
+}
+
+CustomQSlider#eqSlider2::add-page:vertical:disabled {
+    background: #eee;
+    border-color: #999;
+}
+
+CustomQSlider#eqSlider2::handle:vertical:disabled {
     background: #eee;
     border: 1px solid #aaa;
     border-radius: 4px;

@@ -20,7 +20,7 @@ class PrefsDialog;
 
 class PrefsDialog : public QDialog
 {
-    Q_OBJECT
+   Q_OBJECT
 
 public:
     explicit PrefsDialog(QWidget *parent = 0);
