@@ -655,7 +655,9 @@ void MainWindow::on_pushButtonSearch_clicked()
     ui->lineEditSearch->clear();
     QObject::connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(slot_selectionChanged()));
 
-    useCustomFrame(false);
+    visDialog = new VisualizerDialog(this);
+
+    visDialog->show();
 
 }
 //-----------------------------------------------------------
@@ -1402,6 +1404,16 @@ void MainWindow::updateLoop()
     visualizer.plotSpectrum(fmodSys.getRawSpectrumData());
 
     ui->graphicsView->repaint();
+
+    //Separate visualizer
+    if (visDialog != nullptr){
+        if(visDialog->isVisible())
+        {
+            visDialog->plotSpectrum(fmodSys.getRawSpectrumData());
+            visDialog->repaintGraphics();
+        }
+    }
+
 
     //Update trackbar position
 

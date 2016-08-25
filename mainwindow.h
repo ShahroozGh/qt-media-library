@@ -50,6 +50,8 @@
 
 #include "customqdial.h"
 
+#include "Visualizers/visualizerdialog.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -169,6 +171,8 @@ private:
     AudioSystem fmodSys;
 
     SpectrumVisualizer visualizer;
+
+    VisualizerDialog* visDialog;
 
     // Returns stored album art if it exists
     QPixmap getAlbumArt(QString albumTitle);
